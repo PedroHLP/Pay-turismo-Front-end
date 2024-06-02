@@ -8,13 +8,14 @@ import Image from 'react-bootstrap/Image';
 
 import useAuth from '../hooks/useAuth.jsx';
 
-import logo from '../assets/logo.webp';
+import logo from '../assets/login.svg';
+import { Col, FloatingLabel, Row } from 'react-bootstrap';
 
 
 const LOGIN_URL = '/automations/login'
 
 const Login = () => {
-    const { setAuth } = useAuth();  // Setar valor para Context 07Nov23 
+    const { setAuth } = useAuth(); 
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -26,7 +27,6 @@ const Login = () => {
     const [user, setUser] = useState('');
     const [pwd, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
-    //const [success, setSuccess] = useState(false); // 08-11-2023
 
     useEffect(() => {
         userRef.current.focus();
@@ -53,11 +53,6 @@ const Login = () => {
             };
 
             const response = await automationFetch.post(LOGIN_URL, requestData, config);
-
-            //console.log(JSON.stringify(response?.data));
-            //console.log(JSON.stringify(response));
-
-
             const accessToken = response?.data?.token;
             const roles = response?.data?.role;
             const refreshToken = response?.data?.refreshToken;
@@ -65,7 +60,6 @@ const Login = () => {
             setAuth({ user, pwd, roles, accessToken, refreshToken })
             setUser('');
             setPwd('');
-            //setSuccess(true); // 08-11-2023
 
             navigate(from, { replace: true });
 
@@ -96,67 +90,34 @@ const Login = () => {
 
 
     return (
-        <Container className="mt-5">
-            <div className="row d-flex justify-content-center">
-                <div className="col-md-6">
-                    <div className="px-5 py-5 border border-dark bg-light">
-                        <div className="text-center"><Image src={logo} width={225}/></div>
-                        
-                        <p ref={errRef} className="text-danger text-center" aria-live="assertive">{errMsg}</p>
+        <div className="d-flex justify-content-center align-items-center vh-100">
+            <Container>
+                <p ref={errRef} className="text-danger text-center" aria-live="assertive">{errMsg}</p>
+                <Row className="align-items-center" xs={1} md={2}>
+                    <Col className="py-4">
+                        <div className="text-center"><Image src={logo} width={300}/></div>
+                    </Col>
+                    <Col>
                         <Form onSubmit={handleSubmit}>
                             <Form.Group className="mb-3">
-                                <Form.Label htmlFor="username">Usuário:</Form.Label>
-                                <Form.Control type="text" id="username" ref={userRef} autoComplete='off'
-                                onChange={(e) => setUser(e.target.value)} value={user} required/>
+                                <FloatingLabel label="Usuário">
+                                    <Form.Control type="text" id="username" ref={userRef} autoComplete='off'
+                                    placeholder="Usuário" onChange={(e) => setUser(e.target.value)} required/>
+                                </FloatingLabel>
                             </Form.Group>
                             <Form.Group className="mb-3">
-                                <Form.Label htmlFor="password">Senha:</Form.Label>
-                                <Form.Control type="password" id="password" 
-                                onChange={(e) => setPwd(e.target.value)} value={pwd} required/>
+                                <FloatingLabel label="Senha">
+                                    <Form.Control type="password" id="password" placeholder="Senha" 
+                                    onChange={(e) => setPwd(e.target.value)} required/>
+                                </FloatingLabel>
                             </Form.Group>
-                            <Button type="submit" className="mb-4 w-100">Logar</Button>
+                            <Button type="submit" className="mb-3 w-100">Entrar</Button>
                         </Form>
                         <Link to='/recovery' className="text-secondary">Esqueci minha senha</Link>
-                    </div>
-                </div>
-            </div>
-        </Container>
-        
-        // <section className='section_login'>
-
-        //     <img src={logo} alt="logo_login" className='logo_login' />
-
-        //     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-        //     <h3>Login</h3>
-        //     <form className='form_login' onSubmit={handleSubmit}>
-        //         <label className='label_login' htmlFor="username">Usuário:</label>
-        //         <input className='input_login'
-        //             type="text"
-        //             id="username"
-        //             ref={userRef}
-        //             autoComplete='off'
-        //             onChange={(e) => setUser(e.target.value)}
-        //             value={user}
-        //             required
-        //         />
-
-        //         <label className='label_login' htmlFor="password">Senha:</label>
-        //         <input className='input_login'
-        //             type="password"
-        //             id="password"
-        //             onChange={(e) => setPwd(e.target.value)}
-        //             value={pwd}
-        //             required
-        //         />
-        //         <button className='button_login'>Logar</button>
-        //         <p>
-        //             <br />
-        //             <span className="line">
-        //                 <Link to='/recovery'>Esqueci minnha senha</Link>
-        //             </span>
-        //         </p>
-        //     </form>
-        // </section>
+                    </Col>
+                </Row>
+            </Container>
+        </div>
     )
 }
 
