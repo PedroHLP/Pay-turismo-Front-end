@@ -121,7 +121,7 @@ function Home() {
                     </Col>
                   </Row>
                   <hr />
-                  <Table hover>
+                  <Table hover responsive>
                     <thead className="text-center">
                       <tr>
                       <th>Data</th>
