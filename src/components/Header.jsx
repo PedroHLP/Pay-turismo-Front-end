@@ -19,50 +19,53 @@ import useAuth from '../hooks/useAuth';
 import logo from '../assets/logo-w3l.png';
 import { Image } from 'react-bootstrap';
 import { INSPECTIONS_ADD_PATH, INSPECTIONS_PATH } from '../paths';
+import { FaClipboardList, FaHouse, FaMagnifyingGlass, FaMoneyBill, FaPlus, FaShop, FaUserPlus } from 'react-icons/fa6';
 
 const Header = () => {
   const { auth } = useAuth() // consumir  Context 08Nov23 (array)
-  const navDropdownTitleAdmin = (<><RiAdminLine/> Administração</>) // para que seja possivel adicionar um icone ao navdropdown
+  const navDropdownTitleEstabelecimento = (<><FaShop/> Estabelecimento</>)
   const navDropdownTitleUser = (<Navbar.Text> Olá, <span className="text-white">{auth.user}</span></Navbar.Text> )
 
   return (
       <>
     {[false].map((expand) => (
       <header>
-          <Navbar key={expand} expand={expand} bg="dark" data-bs-theme="dark" className="mb-4 text-white">
+          <Navbar key={expand} expand={expand} bg="primary" data-bs-theme="dark" className="mb-4">
               <Container fluid>
                   <div className="d-inline-flex align-middle">
-                    <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`}/>  
-                    <Navbar.Brand as={Link} to="/" className="mx-4"><Image src={logo} width={100}/></Navbar.Brand>
+                    <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`}/>
                   </div>
 
                   <Navbar.Offcanvas
                   id={`offcanvasNavbar-expand-${expand}`}
                   aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
                   placement="start"
-                  bg="dark" data-bs-theme="dark"
+                  data-bs-theme="light"
                   >
                       
                       <Offcanvas.Header closeButton>
                           <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>
-                          Monitoramento
+                          PayZen Integrator
                           </Offcanvas.Title>
                       </Offcanvas.Header>
 
                       <Offcanvas.Body>
                           <Nav className="justify-content-center flex-grow-1 pe-3">
-                            {/* as={Link} para poder usar o react router */}
-                            <Nav.Link as={Link} to="/"><IoMdHome/> Dashboard</Nav.Link>
-                            <Nav.Link as={Link} to="/config"><GoGear/> Configurações</Nav.Link>
-                            <Nav.Link as={Link} to={INSPECTIONS_PATH}><FcInspection/> Inspeções</Nav.Link>
+                            <Nav.Link as={Link} to="/"><FaHouse/> Home</Nav.Link>
                             <NavDropdown
-                                title= {navDropdownTitleAdmin}
+                                title={navDropdownTitleEstabelecimento}
                                 id={`offcanvasNavbarDropdown-expand-${expand}`}
                             >
-                                <NavDropdown.Item as={Link} to='/report'><TbReportAnalytics /> Relatórios</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to='/register'><AiOutlineUserAdd /> Novo Usuário</NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item as={Link} to="/admin"> /admin</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='#'><FaPlus /> Novo</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='#'><FaMagnifyingGlass /> Consultar</NavDropdown.Item>
+                            </NavDropdown>
+                            <Nav.Link as={Link} to="#"><FaMoneyBill/> Vendas</Nav.Link>
+                            <NavDropdown
+                                title='Administração'
+                                id={`offcanvasNavbarDropdown-expand-${expand}`}
+                            >
+                                <NavDropdown.Item as={Link} to='/admin'><FaClipboardList /> Relatórios</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/register'><FaUserPlus /> Novo Usuário</NavDropdown.Item>
                             </NavDropdown>
                           </Nav>
                       </Offcanvas.Body>
@@ -71,8 +74,8 @@ const Header = () => {
                     <div className="mx-3">
                         <NavDropdown
                         title={navDropdownTitleUser}
-                        menuVariant="dark"
                         align="end"
+                        data-bs-theme="light"
                         >
                             <NavDropdown.Item as={Link} to='/help'><TbHelpSquare /> Ajuda</NavDropdown.Item>
                             <NavDropdown.Divider />
