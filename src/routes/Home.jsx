@@ -1,97 +1,145 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import useAutomationFetchPrivate from '../hooks/useAutomationFetchPrivate';
-import RobotImage from '../functions/ImageSelection';
-import { useNavigate, useLocation } from "react-router-dom";
 import Header from '../components/Header';
-import { Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
-import Footer from '../components/Footer';
+import { Col, Container, ProgressBar, Row, Table } from 'react-bootstrap';
+import { FaCalendarDays, FaClock, FaCheck, FaPix, FaCreditCard } from "react-icons/fa6";
 
-const GET_ROBOT_URL = '/automations/all';
 
 function Home() {
 
-  const [posts, setPosts] = useState([]);
-  const automationFetchPrivate = useAutomationFetchPrivate();
+  const salesPlaceholder = [{
+    id: 1,
+    date: '02/06/2024',
+    status: 1,
+    description: 'pagamento taxa',
+    value: 10.00,
+    type: 1
+  },{
+    id: 2,
+    date: '02/06/2024',
+    status: 1,
+    description: 'peça de aço inox',
+    value: 460.00,
+    type: 2
+  },{
+    id: 3,
+    date: '02/06/2024',
+    status: 0,
+    description: 'internet',
+    value: 79.99,
+    type: 0
+  },{
+    id: 4,
+    date: '02/06/2024',
+    status: 1,
+    description: 'aluguel',
+    value: 1500.00,
+    type: 2
+  }]
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const getPosts = async () => {
-    try {
-
-      const response = await automationFetchPrivate.get(GET_ROBOT_URL);
-      const data = response.data;
-
-      setPosts(data);
-
-    } catch (error) {
-      console.log(error);
-      navigate('/login', { state: { from: location }, replace: true })
-    }
-  }
-
-  useEffect(() => {
-    getPosts();
-  }, []);
-
-  // State to hold the width of the border
-  const [borderWidth, setBorderWidth] = useState(0);
-
-  // Function to calculate the border width
-  useEffect(() => {
-    const borderElement = document.querySelector('.border');
-    if (borderElement) {
-      const computedStyle = window.getComputedStyle(borderElement);
-      const borderWidth = parseFloat(computedStyle.getPropertyValue('border-width'));
-      setBorderWidth(borderWidth);
-    }
-  }, []);
+  const salesTableRows = salesPlaceholder.map((sale) => (
+    <tr className="text-center" key={sale.id} value={sale.id}>
+    <td>{sale.date}</td>
+    <td>{sale.status ? (<FaCheck className="text-success"/>) : (<FaClock className="text-warning"/>)}</td>
+    <td>{sale.description}</td>
+    <td>R$ {sale.value}</td>
+    <td className="text-success">
+      {sale.type === 1 ? (
+        <FaPix />
+      ) : sale.type === 2 ? (
+        <FaCreditCard />
+      ) : (
+        <FaClock className="text-warning"/>
+      )}
+    </td>
+    </tr>
+  ))
 
   return (
     <>
       <Header/>
         <Container fluid>
-          <main className="mx-5 px-4 py-3 border border-secondary bg-light">
-            <Row className="align-items-center">
-              {posts.length === 0 ? (
-                <div className="d-flex justify-content-center">
-                  <div className="spinner-border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
+          <Row>
+            <Col className="pb-4" sm={4}>
+              <div className="shadow-sm p-3 bg-body-tertiary rounded">
+                <div className="mb-3">
+                  <Row>
+                    <Col>
+                      <span className='fw-semibold'>Extrato</span>
+                    </Col>
+                    <Col className="text-end">
+                      <span className="mx-1">Últimos 10 dias</span>
+                      <Link to="#" className="link-dark">
+                        <FaCalendarDays />
+                      </Link>
+                    </Col>
+                  </Row>
+                  <hr />
                 </div>
-              ) : (
-                posts.map((post) => (
-                  <Col xs={7} sm={5} md={4} lg={3} xl={2}>
-                    <Link to={`/config`} className="link-underline link-underline-opacity-0">
-                      <div key={post.id} className="text-center px-4 py-3 m-2 bg-light">
-                        <img
-                          src={RobotImage(post.statusAutomacao)}
-                          alt={post.statusAutomacao}
-                          height="50"
-                          className="mb-1"
-                        />
-                        <div className="text-uppercase">
-                          <OverlayTrigger
-                            key={post.id}
-                            placement="bottom"
-                            overlay={<Tooltip id={`tooltip-${post.id}`}>{post.nomeAutomacao}</Tooltip>}
-                            delay={{ show: 500 }}
-                          >
-                            <div className="text-dark">
-                              {post.nomeAutomacao}
-                            </div>
-                          </OverlayTrigger>
-                        </div>
-                      </div>
-                    </Link>
-                  </Col>
-                ))
-              )}
-            </Row>
-          </main>
+                <div className="mb-2">
+                  <Row>
+                    <Col>
+                      <span>Entrada</span>
+                    </Col>
+                    <Col className="text-end">
+                      <span>R$ 0,00</span>
+                    </Col>
+                  </Row>
+                  <ProgressBar variant="success" now={60} />
+                </div>
+                <div className="mb-3">
+                  <Row>
+                    <Col>
+                      <span>Saída</span>
+                    </Col>
+                    <Col className="text-end">
+                      <span>R$ 0,00</span>
+                    </Col>
+                  </Row>
+                  <ProgressBar variant="danger" now={35}/>
+                </div>
+                <div className="text-end">
+                  <Link to="#" className="link-dark text-decoration-none">
+                    Ver todos
+                  </Link>
+                </div>
+              </div>
+            </Col>
+
+            <Col className="pb-4" sm={8}>
+              <div className="shadow-sm p-3 bg-body-tertiary rounded">
+              <div className="mb-3">
+                  <Row>
+                    <Col>
+                      <span className='fw-semibold'>Vendas</span>
+                    </Col>
+                    <Col className="text-end">
+                      <span className="mx-1">Últimos 10 dias</span>
+                      <Link to="#" className="link-dark">
+                        <FaCalendarDays />
+                      </Link>
+                    </Col>
+                  </Row>
+                  <hr />
+                  <Table hover>
+                    <thead className="text-center">
+                      <tr>
+                      <th>Data</th>
+                      <th>Status</th>
+                      <th>Descrição</th>
+                      <th>Valor</th>
+                      <th>Tipo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {salesTableRows}
+                    </tbody>
+                    </Table>
+                </div>
+              </div>
+            </Col>
+          </Row>
         </Container>
-      <Footer />
     </>
   );
 }
