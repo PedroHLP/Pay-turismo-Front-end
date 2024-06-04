@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Blinker";
+  font-size: large;
+}
+
+// required to get $blue variable
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+
+$primary: $blue-700; // set the $primary variable
+
+// merge with existing $theme-colors map
+$theme-colors: map-merge($theme-colors, (
+  "primary": $primary
+));
+
+// set changes
+@import "../node_modules/bootstrap/scss/bootstrap";

@@ -17,7 +17,7 @@ import Help from './routes/Help.jsx';
 import Unauthorized from './routes/Unauthorized.jsx';
 import InspectionForm from './routes/InspectionForm.jsx';
 
-import './style.css';
+import '../scss/custom.scss';
 
 import { AuthProvider } from './context/AuthProvider.jsx';
 import Recovery from './routes/Recovery.jsx';
