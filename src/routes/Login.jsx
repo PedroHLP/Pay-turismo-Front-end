@@ -27,6 +27,7 @@ const Login = () => {
     const [user, setUser] = useState('');
     const [pwd, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
         userRef.current.focus();
@@ -38,6 +39,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         try {
             const requestData = {
@@ -86,8 +88,8 @@ const Login = () => {
 
             errRef.current.focus();
         }
+        setLoading(false);
     }
-
 
     return (
         <div className="d-flex justify-content-center align-items-center vh-100">
@@ -111,7 +113,12 @@ const Login = () => {
                                     onChange={(e) => setPwd(e.target.value)} required/>
                                 </FloatingLabel>
                             </Form.Group>
-                            <Button type="submit" className="mb-3 w-100">Entrar</Button>
+                            <Button
+                             type="submit"
+                             className="mb-3 w-100"
+                             disabled={isLoading}>
+                                {isLoading ? 'Entrando...' : 'Entrar'}
+                            </Button>
                         </Form>
                         <Link to='/recovery' className="text-secondary">Esqueci minha senha</Link>
                     </Col>
