@@ -9,7 +9,6 @@ import { InputGroup, Row, Col, ListGroup, Tooltip, OverlayTrigger, Accordion } f
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 import { IoMdInformationCircle } from "react-icons/io";
-import { INSPECTIONS_PATH } from '../paths';
 
 const INSPECTIONS_URL = '/inspections/new';
 
@@ -247,7 +246,7 @@ const InspectionForm = () => {
                             <div className="text-center text-success">
                                 <FaCheckCircle size={50}/>
                                 <h5 className="my-3">Inspeção inserida com sucesso!</h5>
-                                <Button className="btn-secondary" as={Link} to={INSPECTIONS_PATH}>Voltar</Button>
+                                <Button className="btn-secondary" as={Link} to='#'>Voltar</Button>
                             </div>
                         ) : (
                             <Form onSubmit={handleSubmit}>

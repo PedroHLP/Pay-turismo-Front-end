@@ -2,7 +2,6 @@ import Container from 'react-bootstrap/Container';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Button, Col, Row, Table } from 'react-bootstrap';
-import { INSPECTIONS_ADD_PATH } from '../paths';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaCheck, FaEye, FaPencil, FaTrash, FaXmark } from "react-icons/fa6";
 import { useEffect, useState } from 'react';
@@ -80,7 +79,7 @@ const InspectionList = () => {
                                 <h3>Inspeções</h3>
                             </Col>
                             <Col className="text-end">
-                                <Button as={Link} to={INSPECTIONS_ADD_PATH}>Novo</Button>
+                                <Button as={Link} to='#'>Novo</Button>
                             </Col>
                         </Row>
                         <hr />

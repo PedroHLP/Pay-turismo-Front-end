@@ -21,7 +21,6 @@ import '../scss/custom.scss';
 
 import { AuthProvider } from './context/AuthProvider.jsx';
 import Recovery from './routes/Recovery.jsx';
-import { INSPECTIONS_ADD_PATH, INSPECTIONS_PATH } from './paths.jsx';
 import InspectionList from './routes/InspectionList.jsx';
 
 
@@ -38,6 +37,7 @@ const AppRouter = (
     <Route path="/help" element={<Help />} />
     <Route path="/unauthorized" element={<Unauthorized />} />
     <Route path='/recovery' element={<Recovery />} />
+    <Route path="/register" element={<Register />} />
 
     {/* Rota protegidas */}
     <Route element={<RequireAuth allowedRoles={[ROLES.Admin, ROLES.User]} />}>
@@ -46,12 +46,9 @@ const AppRouter = (
 
     {/* Outras rotas protegidas */}
     <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-      <Route path="/register" element={<Register />} />
       <Route path="/config" element={<Config />} />
       <Route path="/report" element={<Reports />} />
       <Route path="/admin" element={<Admin />} />
-      <Route path={INSPECTIONS_PATH} element={<InspectionList />} />
-      <Route path={INSPECTIONS_ADD_PATH} element={<InspectionForm />} />
     </Route>
   </Routes>
 );

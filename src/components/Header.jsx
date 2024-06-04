@@ -18,7 +18,6 @@ import useAuth from '../hooks/useAuth';
 
 import logo from '../assets/logo-w3l.png';
 import { Image } from 'react-bootstrap';
-import { INSPECTIONS_ADD_PATH, INSPECTIONS_PATH } from '../paths';
 import { FaClipboardList, FaHouse, FaMagnifyingGlass, FaMoneyBill, FaPlus, FaShop, FaUserPlus } from 'react-icons/fa6';
 
 const Header = () => {

@@ -10,12 +10,13 @@ import useAuth from '../hooks/useAuth.jsx';
 
 import logo from '../assets/login.svg';
 import { Col, FloatingLabel, Row } from 'react-bootstrap';
+import { REGISTER_PATH } from '../paths.jsx';
 
 
 const LOGIN_URL = '/automations/login'
 
 const Login = () => {
-    const { setAuth } = useAuth(); 
+    const { setAuth } = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -120,7 +121,14 @@ const Login = () => {
                                 {isLoading ? 'Entrando...' : 'Entrar'}
                             </Button>
                         </Form>
-                        <Link to='/recovery' className="text-secondary">Esqueci minha senha</Link>
+                        <Row xs={2}>
+                            <Col sm={7}>
+                                <Link to='/recovery' className="link-secondary text-decoration-none">Esqueci minha senha</Link>
+                            </Col>
+                            <Col className="text-end" sm={5}>
+                                <Link to={REGISTER_PATH} className="link-primary text-decoration-none">Cadastrar-se</Link>
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
             </Container>

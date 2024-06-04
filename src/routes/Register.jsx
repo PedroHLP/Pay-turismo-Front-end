@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from "react";
-import useAutomationFetchPrivate from "../hooks/useAutomationFetchPrivate";
 import useAuth from "../hooks/useAuth";
 import { FaCheck, FaCheckCircle, FaCheckDouble } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -27,8 +26,6 @@ const Register = () => {
 
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
-
-    const automationFetchPrivate = useAutomationFetchPrivate();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -64,56 +61,11 @@ const Register = () => {
         if (!validName || !validPwd || !validMatch)
             return;
 
-        try {
-            const requestData = {
-                login: user,
-                password: pwd,
-                role: 'USER',
-            };
-
-            const config = {
-                // headers: {
-                //     Authorization: `Bearer ${auth.accessToken}`, 
-                //     "Content-Type": "application/json",
-                // },
-                withCredentials: true
-            };
-
-            //console.log(requestData);
-            const response = await automationFetchPrivate.post(REGISTER_URL, requestData, config);
-
-            if (response.status === 200) {
-                //console.log('Usuário registrado com sucesso!');
-                setSuccess(true);
-                // Limpe os campos de entrada após o registro (se necessário)
-            } else {
-                //console.log('Falha ao incluir usuário');
-                setErrMsg('Falha ao incluir usuário');
-                errRef.current.focus();
-            }
-        } catch (error) {
-            if (error.response) {
-                if (error.response.status === 409) {
-                    //console.log('Usuário já existente!');
-                    setErrMsg('Usuário já existente!');
-                    errRef.current.focus();
-                } else {
-                    console.error('Erro na solicitação:', error);
-                    setErrMsg('Falha ao incluir usuário');
-                    errRef.current.focus();
-                }
-            } else {
-                console.error('Erro na solicitação:', error);
-                setErrMsg('Sem resposta do servidor');
-                errRef.current.focus();
-                navigate('/login', { state: { from: location }, replace: true })
-            }
-        }
+        setSuccess(true);
     }
 
     return (
         <>
-        <Header />
         <Container fluid>
             <Row className="justify-content-center">
                 <div className="col-md-8">
