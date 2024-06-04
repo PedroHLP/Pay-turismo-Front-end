@@ -13,7 +13,7 @@ import { Col, FloatingLabel, Row } from 'react-bootstrap';
 import { REGISTER_PATH } from '../paths.jsx';
 
 
-const LOGIN_URL = '/automations/login'
+const LOGIN_URL = '/users/login'
 
 const Login = () => {
     const { setAuth } = useAuth();

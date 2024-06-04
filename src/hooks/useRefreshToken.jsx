@@ -2,7 +2,7 @@ import automationFetch from "../axios/config";
 import useAuth from "./useAuth";
 
 const useRefreshToken = () => {
-    const REFRESH_URL = '/automations/refresh';
+    const REFRESH_URL = '/users/refresh';
 
     const { setAuth } = useAuth();
     const { auth } = useAuth();
