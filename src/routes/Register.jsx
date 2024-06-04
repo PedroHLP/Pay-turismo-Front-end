@@ -7,7 +7,7 @@ import { Container, Form, Button, InputGroup, Row } from "react-bootstrap";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const REGISTER_URL = '/automations/register';
+const REGISTER_URL = '/users/register';
 
 
 const Register = () => {

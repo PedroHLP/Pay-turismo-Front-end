@@ -8,7 +8,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const Users = () => {
     const [users, setUsers] = useState();
-    const USERS_URL = '/automations/users';
+    const USERS_URL = '/users/all';
     const automationFetchPrivate = useAutomationFetchPrivate();
 
     const navigate = useNavigate();
