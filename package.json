@@ -19,6 +19,7 @@
     "react-bootstrap": "^2.9.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
+    "react-input-mask": "^2.0.4",
     "react-router-dom": "^6.16.0",
     "sass": "^1.77.4"
   },
