@@ -11,9 +11,18 @@ const REGISTER_URL = '/users/register';
 
 
 const Register = () => {
+    const [activeTab, setActiveTab] = useState(0); // Estado para gerenciar a aba ativa
+
+    const handleNextTab = () => {
+        setActiveTab((prevTab) => (prevTab === 2 ? 0 : prevTab + 1));
+    }
+
+    const handlePrevTab = () => {
+        setActiveTab((prevTab) => (prevTab === 0 ? 2 - 1 : prevTab - 1));
+    }
 
     const basicInfoTab = (
-        <Tab eventKey="basicInfo" title="Informações Básicas">
+        <Tab eventKey='0' title="Informações Básicas" key='0' disabled>
             <Form.Group className="mb-3">
                 <FloatingLabel label="CPF">
                 <Form.Control
@@ -61,7 +70,7 @@ const Register = () => {
     )
 
     const addressTab = (
-        <Tab eventKey="address" title="Endereço">
+        <Tab eventKey='1' title="Endereço" key='1' disabled>
             <Form.Group className="mb-3">
                 <FloatingLabel label="CEP">
                     <Form.Control 
@@ -140,7 +149,7 @@ const Register = () => {
     )
 
     const documentsTab = (
-        <Tab eventKey="documents" title="Documentos">
+        <Tab eventKey='2' title="Documentos" key='2' disabled>
             <Form.Group className="mb-3">
                 <Form.Label>Foto com documento</Form.Label>
                 <Form.Control
@@ -176,6 +185,14 @@ const Register = () => {
         </Tab>
     )
 
+    const formTabs = (
+        <Tabs className="mb-3" activeKey={activeTab} fill>
+            {basicInfoTab}
+            {addressTab}
+            {documentsTab}
+        </Tabs>
+    )
+
     return (
         <>
         <div className="d-flex justify-content-center align-items-center vh-100">
@@ -186,29 +203,27 @@ const Register = () => {
                     </Col>
                     <Col>
                         <Form>
-                            <Tabs className="mb-3" fill>
-                                {basicInfoTab}
-                                {addressTab}
-                                {documentsTab}
-                            </Tabs>
-                            {/* <Row xs={2}>
+                            {formTabs}
+                            <Row className="mb-3" xs={activeTab === 0 ? 1 : 2}>
                                 <Col>
                                     <Button
-                                    className="mb-3 w-100"
-                                    variant="secondary"
+                                        className={activeTab === 0 ? "visually-hidden" : 'w-100'}
+                                        variant="secondary"
+                                        onClick={handlePrevTab}
                                     >
                                     Anterior
                                     </Button>
                                 </Col>
-                                <Col> */}
+                                <Col>
                                     <Button
-                                    type="submit"
-                                    className="mb-3 w-100"
+                                        type={activeTab === 2 ? 'submit' : 'button'}
+                                        className="w-100"
+                                        onClick={handleNextTab}
                                     >
-                                    Enviar
+                                    {activeTab === 2 ? 'Enviar' : 'Próximo'}
                                     </Button>
-                                {/* </Col>
-                            </Row> */}
+                                </Col>
+                            </Row>
                             <Link to='/login' className="link-secondary text-decoration-none">Entrar</Link>
                         </Form>
                     </Col>
