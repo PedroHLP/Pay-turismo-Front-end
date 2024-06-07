@@ -3,7 +3,7 @@ import { Container, Form, Button,  Row, Col, FloatingLabel, Image, Tab, Tabs } f
 import image from '../assets/sign_up.svg';
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import InputMask from 'react-input-mask';
+import { IMaskInput } from "react-imask";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -23,21 +23,28 @@ const Register = () => {
     const handlePrevTab = () => {
         setActiveTab((prevTab) => (isFirstTab ? prevTab : prevTab - 1));
     }
+    
 
     const basicInfoTab = (
         <Tab eventKey={0} title="Informações Básicas" key={0}>
             <Form.Group className="mb-3">
-                <FloatingLabel label="CPF">
-                <Form.Control
-                    as={InputMask}
-                    mask="999.999.999-99"
-                    type="text"
-                    id="cpf"
-                    autoComplete='off'
-                    placeholder="CPF"
-                    required
-                />
-                </FloatingLabel>
+            <FloatingLabel label="CPF">
+            <Form.Control
+                as={IMaskInput}
+                mask="000.000.000-00"
+                unmask={true} // Remover a máscara do valor
+                type="text"
+                id="cpf"
+                autoComplete='off'
+                placeholder="CPF"
+                // DO NOT USE onChange TO HANDLE CHANGES!
+                // USE onAccept INSTEAD
+                onAccept={
+                    (value) => console.log(value)
+                }
+                required
+            />
+            </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
                 <FloatingLabel label="Nome">
@@ -59,12 +66,18 @@ const Register = () => {
             <Form.Group className="mb-3">
                 <FloatingLabel label="Celular">
                     <Form.Control 
-                        as={InputMask}
-                        mask="(99) 99999-9999"
+                        as={IMaskInput}
+                        mask="(00) 00000-0000"
+                        unmask={true} // Remover a máscara do valor
                         type="text"
                         id="phone"
                         autoComplete='off'
                         placeholder="Celular"
+                        // DO NOT USE onChange TO HANDLE CHANGES!
+                        // USE onAccept INSTEAD
+                        onAccept={
+                            (value) => console.log(value)
+                        }
                         required
                     />
                 </FloatingLabel>
@@ -72,12 +85,18 @@ const Register = () => {
             <Form.Group className="mb-3">
                 <FloatingLabel label="CNPJ Cadastur">
                 <Form.Control
-                    as={InputMask}
-                    mask="99.999.999/9999-99"
+                    as={IMaskInput}
+                    mask="00.000.000/0000-00"
+                    unmask={true}
                     type="text"
                     id="cnpj"
                     autoComplete='off'
                     placeholder="CNPJ"
+                    // DO NOT USE onChange TO HANDLE CHANGES!
+                    // USE onAccept INSTEAD
+                    onAccept={
+                        (value) => console.log(value)
+                    }
                     required
                 />
                 </FloatingLabel>
@@ -85,12 +104,18 @@ const Register = () => {
             <Form.Group className="mb-3">
                 <FloatingLabel label="Vencimento">
                 <Form.Control
-                    as={InputMask}
-                    mask="99/99/9999"
+                    as={IMaskInput}
+                    mask="00/00/0000"
+                    unmask={false} // Manter a máscara no valor
                     type="text"
                     id="expiration"
                     autoComplete='off'
                     placeholder="Vencimento"
+                    // DO NOT USE onChange TO HANDLE CHANGES!
+                    // USE onAccept INSTEAD
+                    onAccept={
+                        (value) => console.log(value)
+                    }
                     required
                 />
                 </FloatingLabel>
@@ -114,12 +139,18 @@ const Register = () => {
             <Form.Group className="mb-3">
                 <FloatingLabel label="CEP">
                     <Form.Control 
-                        as={InputMask}
-                        mask="99999-999"
+                        as={IMaskInput}
+                        mask="00000-000"
+                        unmask={true}
                         type="text"
                         id="cep"
                         autoComplete='off'
                         placeholder="CEP"
+                        // DO NOT USE onChange TO HANDLE CHANGES!
+                        // USE onAccept INSTEAD
+                        onAccept={
+                            (value) => console.log(value)
+                        }
                         required
                     />
                 </FloatingLabel>
@@ -137,8 +168,20 @@ const Register = () => {
             </Form.Group>
             <Form.Group className="mb-3">
                 <FloatingLabel label="Número">
-                    <Form.Control type="number" id="number" autoComplete='off'
-                    placeholder="Number" required/>
+                    <Form.Control
+                        as={IMaskInput}
+                        mask={Number}
+                        type="text"
+                        id="number"
+                        autoComplete='off'
+                        placeholder="Number"
+                        // DO NOT USE onChange TO HANDLE CHANGES!
+                        // USE onAccept INSTEAD
+                        onAccept={
+                            (value) => console.log(value)
+                        }
+                        required
+                    />
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -226,12 +269,21 @@ const Register = () => {
     )
 
     const formTabs = (
-        <Tabs className="mb-3" activeKey={activeTab} onSelect={(k) => setActiveTab(parseInt(k, 10))} fill>
+        <Tabs
+            className="mb-3" 
+            activeKey={activeTab}
+            onSelect={(k) => setActiveTab(parseInt(k, 10))}
+            fill
+        >
             {basicInfoTab}
             {addressTab}
             {documentsTab}
         </Tabs>
     )
+
+    const handleSubmit = async (e) => {
+        console.log("Heyyyy")
+    }
 
     return (
         <>
@@ -242,7 +294,7 @@ const Register = () => {
                         <div className="text-center"><Image src={image} width={300}/></div>
                     </Col>
                     <Col>
-                        <Form>
+                        <Form onSubmit={handleSubmit}>
                             {formTabs}
                             <Row className="mb-3" xs={isFirstTab ? 1 : 2}>
                                 <Col>
