@@ -2,7 +2,7 @@ import { Container, Form, Button,  Row, Col, FloatingLabel, Image, Tab, Tabs } f
 
 import image from '../assets/sign_up.svg';
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputMask from 'react-input-mask';
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -13,16 +13,23 @@ const REGISTER_URL = '/users/register';
 const Register = () => {
     const [activeTab, setActiveTab] = useState(0); // Estado para gerenciar a aba ativa
 
+    const isFirstTab = activeTab === 0;
+    const isLastTab = activeTab === 2;
+
+    useEffect(() => {
+        console.log(activeTab)
+    }, [activeTab])
+
     const handleNextTab = () => {
-        setActiveTab((prevTab) => (prevTab === 2 ? 0 : prevTab + 1));
+        setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1));
     }
 
     const handlePrevTab = () => {
-        setActiveTab((prevTab) => (prevTab === 0 ? 2 - 1 : prevTab - 1));
+        setActiveTab((prevTab) => (isFirstTab ? prevTab : prevTab - 1));
     }
 
     const basicInfoTab = (
-        <Tab eventKey='0' title="Informações Básicas" key='0' disabled>
+        <Tab eventKey={0} title="Informações Básicas" key={0}>
             <Form.Group className="mb-3">
                 <FloatingLabel label="CPF">
                 <Form.Control
@@ -107,7 +114,7 @@ const Register = () => {
     )
 
     const addressTab = (
-        <Tab eventKey='1' title="Endereço" key='1' disabled>
+        <Tab eventKey={1} title="Endereço" key={1}>
             <Form.Group className="mb-3">
                 <FloatingLabel label="CEP">
                     <Form.Control 
@@ -186,7 +193,7 @@ const Register = () => {
     )
 
     const documentsTab = (
-        <Tab eventKey='2' title="Documentos" key='2' disabled>
+        <Tab eventKey={2} title="Documentos" key={2}>
             <Form.Group className="mb-3">
                 <Form.Label>Foto com documento</Form.Label>
                 <Form.Control
@@ -223,7 +230,7 @@ const Register = () => {
     )
 
     const formTabs = (
-        <Tabs className="mb-3" activeKey={activeTab} fill>
+        <Tabs className="mb-3" activeKey={activeTab} onSelect={(k) => setActiveTab(parseInt(k, 10))} fill>
             {basicInfoTab}
             {addressTab}
             {documentsTab}
