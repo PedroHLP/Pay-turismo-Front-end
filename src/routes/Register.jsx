@@ -66,6 +66,43 @@ const Register = () => {
                     />
                 </FloatingLabel>
             </Form.Group>
+            <Form.Group className="mb-3">
+                <FloatingLabel label="CNPJ Cadastur">
+                <Form.Control
+                    as={InputMask}
+                    mask="99.999.999/9999-99"
+                    type="text"
+                    id="cnpj"
+                    autoComplete='off'
+                    placeholder="CNPJ"
+                    required
+                />
+                </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <FloatingLabel label="Vencimento">
+                <Form.Control
+                    as={InputMask}
+                    mask="99/99/9999"
+                    type="text"
+                    id="expiration"
+                    autoComplete='off'
+                    placeholder="Vencimento"
+                    required
+                />
+                </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <FloatingLabel label="Nome Fantasia Agência">
+                <Form.Control
+                    type="text"
+                    id="trade-name"
+                    autoComplete='off'
+                    placeholder="Nome Fantasia Agencia"
+                    required
+                />
+                </FloatingLabel>
+            </Form.Group>
         </Tab>
     )
 
