@@ -198,7 +198,7 @@ const Register = () => {
                 <Form.Label>Foto com documento</Form.Label>
                 <Form.Control
                     type="file"
-                    id="documentPhoto"
+                    id="document-photo"
                     required
                 />
             </Form.Group>
@@ -214,7 +214,7 @@ const Register = () => {
                 <Form.Label>Comprovante de residência</Form.Label>
                 <Form.Control
                     type="file"
-                    id="residenceProof"
+                    id="residence-proof"
                     required
                 />
             </Form.Group>
@@ -222,7 +222,7 @@ const Register = () => {
                 <Form.Label>Comprovante do Cadastur</Form.Label>
                 <Form.Control
                     type="file"
-                    id="cadasturProof"
+                    id="cadastur-proof"
                     required
                 />
             </Form.Group>
