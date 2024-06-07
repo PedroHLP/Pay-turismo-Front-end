@@ -16,10 +16,6 @@ const Register = () => {
     const isFirstTab = activeTab === 0;
     const isLastTab = activeTab === 2;
 
-    useEffect(() => {
-        console.log(activeTab)
-    }, [activeTab])
-
     const handleNextTab = () => {
         setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1));
     }
