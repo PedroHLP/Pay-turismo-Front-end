@@ -248,10 +248,10 @@ const Register = () => {
                     <Col>
                         <Form>
                             {formTabs}
-                            <Row className="mb-3" xs={activeTab === 0 ? 1 : 2}>
+                            <Row className="mb-3" xs={isFirstTab ? 1 : 2}>
                                 <Col>
                                     <Button
-                                        className={activeTab === 0 ? "visually-hidden" : 'w-100'}
+                                        className={isFirstTab ? "visually-hidden" : 'w-100'}
                                         variant="secondary"
                                         onClick={handlePrevTab}
                                     >
@@ -260,11 +260,11 @@ const Register = () => {
                                 </Col>
                                 <Col>
                                     <Button
-                                        type={activeTab === 2 ? 'submit' : 'button'}
+                                        type={isLastTab ? 'submit' : 'button'}
                                         className="w-100"
                                         onClick={handleNextTab}
                                     >
-                                    {activeTab === 2 ? 'Enviar' : 'Próximo'}
+                                        {isLastTab ? 'Enviar' : 'Próximo'}
                                     </Button>
                                 </Col>
                             </Row>
