@@ -11,7 +11,8 @@ const Register = () => {
     const AUTH_KEY = '2123ccb8ca2bc44b390a1e1046a448bf';
     const BASE_URL = 'http://webservice.kinghost.net/web_cep.php';
 
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(null)
+    const [isSearching, setSearching] = useState(false)
 
     const [basicInfo, setBasicInfo] = useState({
         cpf: '',
@@ -74,6 +75,7 @@ const Register = () => {
     const getCepAddress = async (cep) => {
         const urlParameters = `auth=${AUTH_KEY}&formato=json&cep=${cep}`;
         const urlWithParams = `${BASE_URL}?${urlParameters}`;
+        setSearching(true)
         try {
             const response = await fetch(urlWithParams);
             if (!response.ok) {
@@ -93,11 +95,12 @@ const Register = () => {
         } catch (error) {
             setError(error.message);
         }
+        setSearching(false)
     }
     
     const handleButtonClick = () => {
-        getCepAddress(address.cep);
-    };
+        getCepAddress(address.cep)
+    }
 
     const basicInfoTab = (
         <Tab eventKey={0} title="Informações Básicas" key={0}>
@@ -217,7 +220,13 @@ const Register = () => {
                             required
                         />
                     </FloatingLabel>
-                    <Button variant="outline-secondary" onClick={handleButtonClick}><FaMagnifyingGlass /></Button>
+                    <Button
+                        variant="outline-secondary"
+                        onClick={handleButtonClick}
+                        disabled={isSearching}
+                    >
+                      {isSearching ? 'Buscando...' : <FaMagnifyingGlass /> }
+                    </Button>
                 </InputGroup>
             </Form.Group>
             <Form.Group className="mb-3">
