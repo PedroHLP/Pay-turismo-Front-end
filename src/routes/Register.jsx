@@ -11,6 +11,33 @@ const REGISTER_URL = '/users/register';
 
 
 const Register = () => {
+    const [basicInfo, setBasicInfo] = useState({
+        cpf: '',
+        name: '',
+        email: '',
+        phone: '',
+        cnpjCadastur: '',
+        expireDate: '',
+        tradeName: ''
+    })
+
+    const [address, setAddress] = useState({
+        cep: '',
+        address: '',
+        number: '',
+        complement: '',
+        city: '',
+        state: '',
+        country: ''
+    })
+
+    const [documents, setDocuments] = useState({
+        documentPhoto: null,
+        identitySelfie: null,
+        residenceProof: null,
+        cadasturProof: null
+    });
+
     const [activeTab, setActiveTab] = useState(0); // Estado para gerenciar a aba ativa
 
     const isFirstTab = activeTab === 0;
@@ -24,41 +51,62 @@ const Register = () => {
         setActiveTab((prevTab) => (isFirstTab ? prevTab : prevTab - 1));
     }
     
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+    }
 
+    const handleAccept = (fieldName, value) => {
+        setBasicInfo(prevState => ({
+            ...prevState,
+            [fieldName]: value
+        }))
+    }
+
+    const handleChange = (event) => {
+        const {name, value} = event.target;
+        setBasicInfo(prevState => ({
+            ...prevState,
+            [name]: value
+        }))
+    }
+    
     const basicInfoTab = (
         <Tab eventKey={0} title="Informações Básicas" key={0}>
             <Form.Group className="mb-3">
-            <FloatingLabel label="CPF">
-            <Form.Control
-                as={IMaskInput}
-                mask="000.000.000-00"
-                unmask={true} // Remover a máscara do valor
-                type="text"
-                id="cpf"
-                autoComplete='off'
-                placeholder="CPF"
-                // DO NOT USE onChange TO HANDLE CHANGES!
-                // USE onAccept INSTEAD
-                onAccept={
-                    (value) => console.log(value)
-                }
-                required
-            />
-            </FloatingLabel>
+                <FloatingLabel label="CPF">
+                <Form.Control
+                    as={IMaskInput}
+                    mask="000.000.000-00"
+                    unmask={true}
+                    type="text"
+                    name="cpf"
+                    autoComplete='off'
+                    placeholder="CPF"
+                    onAccept={(value) => handleAccept("cpf", value)}
+                    required
+                />
+                </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
                 <FloatingLabel label="Nome">
-                    <Form.Control type="text" id="username" autoComplete='off'
-                    placeholder="Nome" required/>
+                    <Form.Control
+                        type="text"
+                        name="name"
+                        autoComplete='off'
+                        placeholder="Nome"
+                        onChange={handleChange}
+                        required
+                    />
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
                 <FloatingLabel label="Email">
                     <Form.Control 
                         type="email"
-                        id="email"
+                        name="email"
                         autoComplete='off'
                         placeholder="Email"
+                        onChange={handleChange}
                         required
                     />
                 </FloatingLabel>
@@ -70,14 +118,10 @@ const Register = () => {
                         mask="(00) 00000-0000"
                         unmask={true} // Remover a máscara do valor
                         type="text"
-                        id="phone"
+                        name="phone"
                         autoComplete='off'
                         placeholder="Celular"
-                        // DO NOT USE onChange TO HANDLE CHANGES!
-                        // USE onAccept INSTEAD
-                        onAccept={
-                            (value) => console.log(value)
-                        }
+                        onAccept={(value) => handleAccept("phone", value)}
                         required
                     />
                 </FloatingLabel>
@@ -89,14 +133,10 @@ const Register = () => {
                     mask="00.000.000/0000-00"
                     unmask={true}
                     type="text"
-                    id="cnpj"
+                    name="cadasturCnpj"
                     autoComplete='off'
                     placeholder="CNPJ"
-                    // DO NOT USE onChange TO HANDLE CHANGES!
-                    // USE onAccept INSTEAD
-                    onAccept={
-                        (value) => console.log(value)
-                    }
+                    onAccept={(value) => handleAccept("cadasturCnpj", value)}
                     required
                 />
                 </FloatingLabel>
@@ -106,16 +146,12 @@ const Register = () => {
                 <Form.Control
                     as={IMaskInput}
                     mask="00/00/0000"
-                    unmask={false} // Manter a máscara no valor
+                    unmask={false}
                     type="text"
-                    id="expiration"
+                    name="expireDate"
                     autoComplete='off'
                     placeholder="Vencimento"
-                    // DO NOT USE onChange TO HANDLE CHANGES!
-                    // USE onAccept INSTEAD
-                    onAccept={
-                        (value) => console.log(value)
-                    }
+                    onAccept={(value) => handleAccept("expireDate", value)}
                     required
                 />
                 </FloatingLabel>
@@ -124,9 +160,10 @@ const Register = () => {
                 <FloatingLabel label="Nome Fantasia Agência">
                 <Form.Control
                     type="text"
-                    id="trade-name"
+                    name="tradeName"
                     autoComplete='off'
                     placeholder="Nome Fantasia Agencia"
+                    onChange={handleChange}
                     required
                 />
                 </FloatingLabel>
@@ -143,14 +180,10 @@ const Register = () => {
                         mask="00000-000"
                         unmask={true}
                         type="text"
-                        id="cep"
+                        name="cep"
                         autoComplete='off'
                         placeholder="CEP"
-                        // DO NOT USE onChange TO HANDLE CHANGES!
-                        // USE onAccept INSTEAD
-                        onAccept={
-                            (value) => console.log(value)
-                        }
+                        onAccept={(value) => handleAccept("cep", value)}
                         required
                     />
                 </FloatingLabel>
@@ -159,9 +192,10 @@ const Register = () => {
                 <FloatingLabel label="Endereço">
                     <Form.Control
                         type="text"
-                        id="address"
+                        name="address"
                         autoComplete='off'
                         placeholder="Endereço"
+                        onChange={handleChange}
                         required
                     />
                 </FloatingLabel>
@@ -172,14 +206,10 @@ const Register = () => {
                         as={IMaskInput}
                         mask={Number}
                         type="text"
-                        id="number"
+                        name="number"
                         autoComplete='off'
                         placeholder="Number"
-                        // DO NOT USE onChange TO HANDLE CHANGES!
-                        // USE onAccept INSTEAD
-                        onAccept={
-                            (value) => console.log(value)
-                        }
+                        onAccept={(value) => handleAccept("number", value)}
                         required
                     />
                 </FloatingLabel>
@@ -188,9 +218,10 @@ const Register = () => {
                 <FloatingLabel label="Complemento">
                     <Form.Control
                         type="text"
-                        id="complement"
+                        name="complement"
                         autoComplete='off'
                         placeholder="Complemento"
+                        onChange={handleChange}
                         required
                     />
                 </FloatingLabel>
@@ -199,9 +230,10 @@ const Register = () => {
                 <FloatingLabel label="Cidade">
                     <Form.Control
                         type="text"
-                        id="city"
+                        name="city"
                         autoComplete='off'
                         placeholder="Cidade"
+                        onChange={handleChange}
                         required
                     />
                 </FloatingLabel>
@@ -210,9 +242,10 @@ const Register = () => {
                 <FloatingLabel label="Estado">
                     <Form.Control
                         type="text"
-                        id="state"
+                        name="state"
                         autoComplete='off'
                         placeholder="Estado"
+                        onChange={handleChange}
                         required
                     />
                 </FloatingLabel>
@@ -221,9 +254,10 @@ const Register = () => {
                 <FloatingLabel label="País">
                     <Form.Control
                         type="text"
-                        id="country"
+                        name="country"
                         autoComplete='off'
                         placeholder="País"
+                        onChange={handleChange}
                         required
                     />
                 </FloatingLabel>
@@ -237,7 +271,8 @@ const Register = () => {
                 <Form.Label>Foto com documento</Form.Label>
                 <Form.Control
                     type="file"
-                    id="document-photo"
+                    name="documentPhoto"
+                    onChange={handleChange}
                     required
                 />
             </Form.Group>
@@ -245,7 +280,8 @@ const Register = () => {
                 <Form.Label>Selfie com identificação</Form.Label>
                 <Form.Control
                     type="file"
-                    id="selfie"
+                    name="identitySelfie"
+                    onChange={handleChange}
                     required
                 />
             </Form.Group>
@@ -253,7 +289,8 @@ const Register = () => {
                 <Form.Label>Comprovante de residência</Form.Label>
                 <Form.Control
                     type="file"
-                    id="residence-proof"
+                    name="residenceProof"
+                    onChange={handleChange}
                     required
                 />
             </Form.Group>
@@ -261,7 +298,8 @@ const Register = () => {
                 <Form.Label>Comprovante do Cadastur</Form.Label>
                 <Form.Control
                     type="file"
-                    id="cadastur-proof"
+                    name="cadasturProof"
+                    onChange={handleChange}
                     required
                 />
             </Form.Group>
@@ -280,10 +318,6 @@ const Register = () => {
             {documentsTab}
         </Tabs>
     )
-
-    const handleSubmit = async (e) => {
-        console.log("Heyyyy")
-    }
 
     return (
         <>
