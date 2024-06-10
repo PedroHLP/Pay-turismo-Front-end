@@ -1,16 +1,18 @@
-import { Container, Form, Button,  Row, Col, FloatingLabel, Image, Tab, Tabs } from "react-bootstrap";
+import { Container, Form, Button,  Row, Col, FloatingLabel, Image, Tab, Tabs, InputGroup } from "react-bootstrap";
 
 import image from '../assets/sign_up.svg';
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { IMaskInput } from "react-imask";
-
-const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const REGISTER_URL = '/users/register';
-
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 const Register = () => {
+
+    const AUTH_KEY = '2123ccb8ca2bc44b390a1e1046a448bf';
+    const BASE_URL = 'http://webservice.kinghost.net/web_cep.php';
+
+    const [error, setError] = useState(null);
+
     const [basicInfo, setBasicInfo] = useState({
         cpf: '',
         name: '',
@@ -55,21 +57,48 @@ const Register = () => {
         e.preventDefault()
     }
 
-    const handleAccept = (fieldName, value) => {
-        setBasicInfo(prevState => ({
+    const handleChange = (setter, fieldName, value) => {
+        setter(prevState => ({
             ...prevState,
             [fieldName]: value
-        }))
-    }
+        }));
+    };
 
-    const handleChange = (event) => {
-        const {name, value} = event.target;
-        setBasicInfo(prevState => ({
+    const handleAccept = (setter, fieldName, value) => {
+        setter(prevState => ({
             ...prevState,
-            [name]: value
-        }))
+            [fieldName]: value
+        }));
+    };
+
+    const getCepAddress = async (cep) => {
+        const urlParameters = `auth=${AUTH_KEY}&formato=json&cep=${cep}`;
+        const urlWithParams = `${BASE_URL}?${urlParameters}`;
+        try {
+            const response = await fetch(urlWithParams);
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            const data = await response.json();
+            if (data.resultado === '0') {
+                throw new Error('CEP not found');
+            }
+            setAddress({
+                cep: cep,
+                address: data.tipo_logradouro + " " + data.logradouro,
+                city: data.cidade,
+                state: data.uf,
+                country: 'Brasil'
+            })
+        } catch (error) {
+            setError(error.message);
+        }
     }
     
+    const handleButtonClick = () => {
+        getCepAddress(address.cep);
+    };
+
     const basicInfoTab = (
         <Tab eventKey={0} title="Informações Básicas" key={0}>
             <Form.Group className="mb-3">
@@ -82,7 +111,7 @@ const Register = () => {
                     name="cpf"
                     autoComplete='off'
                     placeholder="CPF"
-                    onAccept={(value) => handleAccept("cpf", value)}
+                    onAccept={(value) => handleAccept(setBasicInfo, "cpf", value)}
                     required
                 />
                 </FloatingLabel>
@@ -94,7 +123,7 @@ const Register = () => {
                         name="name"
                         autoComplete='off'
                         placeholder="Nome"
-                        onChange={handleChange}
+                        onChange={(e) => handleChange(setBasicInfo, e.target.name, e.target.value)}
                         required
                     />
                 </FloatingLabel>
@@ -106,7 +135,7 @@ const Register = () => {
                         name="email"
                         autoComplete='off'
                         placeholder="Email"
-                        onChange={handleChange}
+                        onChange={(e) => handleChange(setBasicInfo, e.target.name, e.target.value)}
                         required
                     />
                 </FloatingLabel>
@@ -116,12 +145,12 @@ const Register = () => {
                     <Form.Control 
                         as={IMaskInput}
                         mask="(00) 00000-0000"
-                        unmask={true} // Remover a máscara do valor
+                        unmask={true}
                         type="text"
                         name="phone"
                         autoComplete='off'
                         placeholder="Celular"
-                        onAccept={(value) => handleAccept("phone", value)}
+                        onAccept={(value) => handleAccept(setBasicInfo, "phone", value)}
                         required
                     />
                 </FloatingLabel>
@@ -136,7 +165,7 @@ const Register = () => {
                     name="cadasturCnpj"
                     autoComplete='off'
                     placeholder="CNPJ"
-                    onAccept={(value) => handleAccept("cadasturCnpj", value)}
+                    onAccept={(value) => handleAccept(setBasicInfo, "cadasturCnpj", value)}
                     required
                 />
                 </FloatingLabel>
@@ -151,7 +180,7 @@ const Register = () => {
                     name="expireDate"
                     autoComplete='off'
                     placeholder="Vencimento"
-                    onAccept={(value) => handleAccept("expireDate", value)}
+                    onAccept={(value) => handleAccept(setBasicInfo, "expireDate", value)}
                     required
                 />
                 </FloatingLabel>
@@ -163,7 +192,7 @@ const Register = () => {
                     name="tradeName"
                     autoComplete='off'
                     placeholder="Nome Fantasia Agencia"
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(setBasicInfo, e.target.name, e.target.value)}
                     required
                 />
                 </FloatingLabel>
@@ -174,19 +203,22 @@ const Register = () => {
     const addressTab = (
         <Tab eventKey={1} title="Endereço" key={1}>
             <Form.Group className="mb-3">
-                <FloatingLabel label="CEP">
-                    <Form.Control 
-                        as={IMaskInput}
-                        mask="00000-000"
-                        unmask={true}
-                        type="text"
-                        name="cep"
-                        autoComplete='off'
-                        placeholder="CEP"
-                        onAccept={(value) => handleAccept("cep", value)}
-                        required
-                    />
-                </FloatingLabel>
+                <InputGroup>
+                    <FloatingLabel label="CEP">
+                        <Form.Control
+                            as={IMaskInput}
+                            mask="00000-000"
+                            unmask={true}
+                            type="text"
+                            name="cep"
+                            autoComplete='off'
+                            placeholder="CEP"
+                            onAccept={(value) => handleAccept(setAddress, "cep", value)}
+                            required
+                        />
+                    </FloatingLabel>
+                    <Button variant="outline-secondary" onClick={handleButtonClick}><FaMagnifyingGlass /></Button>
+                </InputGroup>
             </Form.Group>
             <Form.Group className="mb-3">
                 <FloatingLabel label="Endereço">
@@ -195,7 +227,8 @@ const Register = () => {
                         name="address"
                         autoComplete='off'
                         placeholder="Endereço"
-                        onChange={handleChange}
+                        value={address.address}
+                        onChange={(e) => handleChange(setAddress, e.target.name, e.target.value)}
                         required
                     />
                 </FloatingLabel>
@@ -209,7 +242,7 @@ const Register = () => {
                         name="number"
                         autoComplete='off'
                         placeholder="Number"
-                        onAccept={(value) => handleAccept("number", value)}
+                        onAccept={(value) => handleAccept(setAddress, "number", value)}
                         required
                     />
                 </FloatingLabel>
@@ -221,7 +254,7 @@ const Register = () => {
                         name="complement"
                         autoComplete='off'
                         placeholder="Complemento"
-                        onChange={handleChange}
+                        onChange={(e) => handleChange(setAddress, e.target.name, e.target.value)}
                         required
                     />
                 </FloatingLabel>
@@ -233,7 +266,8 @@ const Register = () => {
                         name="city"
                         autoComplete='off'
                         placeholder="Cidade"
-                        onChange={handleChange}
+                        value={address.city}
+                        onChange={(e) => handleChange(setAddress, e.target.name, e.target.value)}
                         required
                     />
                 </FloatingLabel>
@@ -245,7 +279,8 @@ const Register = () => {
                         name="state"
                         autoComplete='off'
                         placeholder="Estado"
-                        onChange={handleChange}
+                        value={address.state}
+                        onChange={(e) => handleChange(setAddress, e.target.name, e.target.value)}
                         required
                     />
                 </FloatingLabel>
@@ -257,7 +292,8 @@ const Register = () => {
                         name="country"
                         autoComplete='off'
                         placeholder="País"
-                        onChange={handleChange}
+                        value={address.country}
+                        onChange={(e) => handleChange(setAddress, e.target.name, e.target.value)}
                         required
                     />
                 </FloatingLabel>
@@ -272,7 +308,7 @@ const Register = () => {
                 <Form.Control
                     type="file"
                     name="documentPhoto"
-                    onChange={handleChange}
+                    // onChange={handleChange}
                     required
                 />
             </Form.Group>
@@ -281,7 +317,7 @@ const Register = () => {
                 <Form.Control
                     type="file"
                     name="identitySelfie"
-                    onChange={handleChange}
+                    // onChange={handleChange}
                     required
                 />
             </Form.Group>
@@ -290,7 +326,7 @@ const Register = () => {
                 <Form.Control
                     type="file"
                     name="residenceProof"
-                    onChange={handleChange}
+                    // onChange={handleChange}
                     required
                 />
             </Form.Group>
@@ -299,7 +335,7 @@ const Register = () => {
                 <Form.Control
                     type="file"
                     name="cadasturProof"
-                    onChange={handleChange}
+                    // onChange={handleChange}
                     required
                 />
             </Form.Group>
