@@ -1,25 +1,34 @@
 import { Container, Form, Button,  Row, Col, FloatingLabel, Image, Tab, Tabs, InputGroup } from "react-bootstrap";
 
-import image from '../assets/sign_up.svg';
+import signUp from '../assets/sign_up.svg';
+import mailSent from '../assets/mail.svg';
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { IMaskInput } from "react-imask";
 import { FaMagnifyingGlass } from "react-icons/fa6";
+import automationFetch from "../axios/config";
 
 const Register = () => {
 
-    const AUTH_KEY = '2123ccb8ca2bc44b390a1e1046a448bf';
-    const BASE_URL = 'http://webservice.kinghost.net/web_cep.php';
+    const REGISTER_URL = '/users/new'
+    const AUTH_KEY = '2123ccb8ca2bc44b390a1e1046a448bf'
+    const BASE_URL = 'http://webservice.kinghost.net/web_cep.php'
+    
+    const [activeTab, setActiveTab] = useState(0)
+    const [error, setError] = useState('')
+    const [isSearchingCep, setSearchingCep] = useState(false)
+    const [isSuccess, setSuccess] = useState(false)
+    const [isRegistering, setRegistering] = useState(false)
 
-    const [error, setError] = useState(null)
-    const [isSearching, setSearching] = useState(false)
+    const isFirstTab = activeTab === 0
+    const isLastTab = activeTab === 2
 
     const [basicInfo, setBasicInfo] = useState({
         cpf: '',
         name: '',
         email: '',
         phone: '',
-        cnpjCadastur: '',
+        cadasturCnpj: '',
         expireDate: '',
         tradeName: ''
     })
@@ -39,12 +48,7 @@ const Register = () => {
         identitySelfie: null,
         residenceProof: null,
         cadasturProof: null
-    });
-
-    const [activeTab, setActiveTab] = useState(0); // Estado para gerenciar a aba ativa
-
-    const isFirstTab = activeTab === 0;
-    const isLastTab = activeTab === 2;
+    })
 
     const handleNextTab = () => {
         setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1));
@@ -53,29 +57,103 @@ const Register = () => {
     const handlePrevTab = () => {
         setActiveTab((prevTab) => (isFirstTab ? prevTab : prevTab - 1));
     }
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setRegistering(true)
+        
+        try {
+            const requestData = {
+                name: basicInfo.name,
+                login: "johndoe",
+                password: "securepassword123",
+                userRole: "USER",
+                cpf: basicInfo.cpf,
+                email: basicInfo.email,
+                phone: basicInfo.phone,
+                tradingName: basicInfo.tradeName,
+                cnpj: basicInfo.cadasturCnpj,
+                documentExpirationDate: basicInfo.expireDate,
+                zipCode: address.cep,
+                address: address.address,
+                number: address.number,
+                complement: address.complement,
+                city: address.city,
+                state: address.state,
+                country: address.country,
+                registrationStatus: "pending",
+                notes: "No additional notes."
+            }
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                withCredentials: true
+            }
+
+            console.log(requestData)
+
+            const response = await automationFetch.post(REGISTER_URL, requestData, config);
+
+            if (response.status === 201) {
+                setSuccess(true)
+            } else {
+                setError('Falha ao incluir Inspeção');
+            }
+
+        } catch (error) {
+            if (error.response) {
+                // Resposta da API com um código de erro (exemplo: 400, 401, 403, etc.)
+                if (error.response.status === 400) {
+                    // Tratar erro de autenticação (usuário ou senha incorretos)
+                    setError('Usuário ou senha incorretos');
+                } else if (error.response.status === 403) {
+                    // Tratar erro de permissão (usuário não tem permissão)
+                    setError('Acesso não autorizado');
+                } else {
+                    // Outros erros da API
+                    setError('Erro na solicitação: ' + error.response.status);
+                }
+            } else if (error.request) {
+                // A solicitação foi feita, mas não houve resposta da API (por exemplo, CORS bloqueado)
+                setError('Sem resposta do servidor');
+            } else {
+                // Erro desconhecido
+                setError('Erro desconhecido: ' + error.message);
+            }
+        }
+        setRegistering(false)
     }
 
     const handleChange = (setter, fieldName, value) => {
         setter(prevState => ({
             ...prevState,
             [fieldName]: value
-        }));
-    };
+        }))
+    }
 
     const handleAccept = (setter, fieldName, value) => {
+        if (fieldName === 'expireDate' && value.length === 10) {
+            const parts = value.split('/')
+            const day = parseInt(parts[0], 10)
+            const month = parseInt(parts[1], 10) -1
+            const year = parseInt(parts[2], 10)
+            const date = new Date(year, month, day)
+            const mysqlDate = date.toISOString().split('T')[0]
+            value = mysqlDate
+        }
+
         setter(prevState => ({
             ...prevState,
             [fieldName]: value
-        }));
-    };
+        }))
+    }
 
     const getCepAddress = async (cep) => {
         const urlParameters = `auth=${AUTH_KEY}&formato=json&cep=${cep}`;
         const urlWithParams = `${BASE_URL}?${urlParameters}`;
-        setSearching(true)
+        setSearchingCep(true)
         try {
             const response = await fetch(urlWithParams);
             if (!response.ok) {
@@ -95,10 +173,10 @@ const Register = () => {
         } catch (error) {
             setError(error.message);
         }
-        setSearching(false)
+        setSearchingCep(false)
     }
     
-    const handleButtonClick = () => {
+    const handleCepButtonClick = () => {
         getCepAddress(address.cep)
     }
 
@@ -222,10 +300,10 @@ const Register = () => {
                     </FloatingLabel>
                     <Button
                         variant="outline-secondary"
-                        onClick={handleButtonClick}
-                        disabled={isSearching}
+                        onClick={handleCepButtonClick}
+                        disabled={isSearchingCep}
                     >
-                      {isSearching ? 'Buscando...' : <FaMagnifyingGlass /> }
+                      {isSearchingCep ? 'Buscando...' : <FaMagnifyingGlass /> }
                     </Button>
                 </InputGroup>
             </Form.Group>
@@ -364,41 +442,67 @@ const Register = () => {
         </Tabs>
     )
 
+    useEffect(() => {
+        setError('');
+    }, [basicInfo, address, activeTab, isSuccess])
+
     return (
         <>
         <div className="d-flex justify-content-center align-items-center vh-100">
             <Container>
-                <Row className="align-items-center" xs={1} md={2}>
-                    <Col className="py-4">
-                        <div className="text-center"><Image src={image} width={300}/></div>
-                    </Col>
-                    <Col>
-                        <Form onSubmit={handleSubmit}>
-                            {formTabs}
-                            <Row className="mb-3" xs={isFirstTab ? 1 : 2}>
-                                <Col>
-                                    <Button
-                                        className={isFirstTab ? "visually-hidden" : 'w-100'}
-                                        variant="secondary"
-                                        onClick={handlePrevTab}
-                                    >
-                                    Anterior
-                                    </Button>
-                                </Col>
-                                <Col>
-                                    <Button
-                                        type={isLastTab ? 'submit' : 'button'}
-                                        className="w-100"
-                                        onClick={handleNextTab}
-                                    >
-                                        {isLastTab ? 'Enviar' : 'Próximo'}
-                                    </Button>
-                                </Col>
-                            </Row>
-                            <Link to='/login' className="link-secondary text-decoration-none">Entrar</Link>
-                        </Form>
-                    </Col>
-                </Row>
+                <p className="text-danger text-center" aria-live="assertive">{error}</p>
+                {isSuccess ? (
+                    <div>
+                        <Row>
+                            <div className="text-center"><Image src={mailSent} width={200}/></div>
+                        </Row>
+                        <Row>
+                            <div className="text-center my-5">
+                                <div className="fs-5">
+                                    Um e-mail foi enviado para <span className="fw-bold text-primary fs-5">{basicInfo.email}</span>, abra-o para dar continuidade com verificação de identidade.
+                                </div>
+                                <div className="my-3">
+                                    <Link to='/login' className="link-secondary">Voltar para a tela de login</Link>
+                                </div>
+                            </div>
+                        </Row>
+                    </div>
+                ) : (
+                    <Row className="align-items-center" xs={1} md={2}>
+                        <Col className="py-4">
+                            <div className="text-center"><Image src={signUp} width={300}/></div>
+                        </Col>
+                        <Col>
+                            <Form onSubmit={handleSubmit}>
+                                {formTabs}
+                                <Row className="mb-3" xs={isFirstTab ? 1 : 2}>
+                                    <Col>
+                                        <Button
+                                            className={isFirstTab ? "visually-hidden" : 'w-100'}
+                                            variant="secondary"
+                                            onClick={handlePrevTab}
+                                        >
+                                        Anterior
+                                        </Button>
+                                    </Col>
+                                    <Col>
+                                        <Button
+                                            type={isLastTab ? 'submit' : 'button'}
+                                            className="w-100"
+                                            onClick={handleNextTab}
+                                            disabled={isRegistering}
+                                        >
+                                            {isRegistering ?
+                                                <span className="spinner-border" role="status"></span> : 
+                                                isLastTab ? 'Enviar' : "Próximo" }
+                                        </Button>
+                                    </Col>
+                                </Row>
+                                <Link to='/login' className="link-secondary text-decoration-none">Entrar</Link>
+                            </Form>
+                        </Col>
+                    </Row>
+                )}
             </Container>
         </div>
         </>
