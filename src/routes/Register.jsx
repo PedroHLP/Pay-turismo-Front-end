@@ -81,7 +81,7 @@ const Register = () => {
                 city: address.city,
                 state: address.state,
                 country: address.country,
-                registrationStatus: "pending",
+                registrationStatus: "PENDING",
                 notes: "No additional notes."
             }
 
