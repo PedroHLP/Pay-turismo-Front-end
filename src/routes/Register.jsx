@@ -135,13 +135,18 @@ const Register = () => {
     }
 
     const handleChange = (setter, fieldName, value) => {
-        if (fieldName === 'state') {
-            const valueUppercase = value.toUpperCase()
-            value = valueUppercase
-        }
         setter(prevState => ({
             ...prevState,
             [fieldName]: value
+        }))
+    }
+
+    const handleFileChange = (event) => {
+        const { name } = event.target
+        const selectedFile = event.target.files[0]
+        setDocuments(prevState => ({
+            ...prevState,
+            [name]: selectedFile
         }))
     }
 
@@ -462,7 +467,7 @@ const Register = () => {
                 <Form.Control
                     type="file"
                     name="documentPhoto"
-                    // onChange={handleChange}
+                    onChange={handleFileChange}
                     required
                 />
             </Form.Group>
@@ -471,7 +476,7 @@ const Register = () => {
                 <Form.Control
                     type="file"
                     name="identitySelfie"
-                    // onChange={handleChange}
+                    onChange={handleFileChange}
                     required
                 />
             </Form.Group>
@@ -480,7 +485,7 @@ const Register = () => {
                 <Form.Control
                     type="file"
                     name="residenceProof"
-                    // onChange={handleChange}
+                    onChange={handleFileChange}
                     required
                 />
             </Form.Group>
@@ -489,7 +494,7 @@ const Register = () => {
                 <Form.Control
                     type="file"
                     name="cadasturProof"
-                    // onChange={handleChange}
+                    onChange={handleFileChange}
                     required
                 />
             </Form.Group>
@@ -498,7 +503,7 @@ const Register = () => {
                 <Form.Control
                     type="file"
                     name="bankingProof"
-                    // onChange={handleChange}
+                    onChange={handleFileChange}
                     required
                 />
             </Form.Group>
