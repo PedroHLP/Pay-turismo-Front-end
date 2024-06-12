@@ -300,6 +300,20 @@ const Register = () => {
     const bankingInfoTab = (
         <Tab eventKey={1} title="Dados Bancários" key={1}>
             <Form.Group className="mb-3">
+                <FloatingLabel label="Banco">
+                <Form.Control
+                    as={IMaskInput}
+                    mask={Number}
+                    type="text"
+                    name="bank"
+                    autoComplete='off'
+                    placeholder="Banco"
+                    onAccept={(value) => handleAccept(setBankingInfo, "bank", value)}
+                    required
+                />
+                </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="mb-3">
                 <FloatingLabel label="Agência">
                 <Form.Control
                     as={IMaskInput}
@@ -323,20 +337,6 @@ const Register = () => {
                     autoComplete='off'
                     placeholder="Conta"
                     onAccept={(value) => handleAccept(setBankingInfo, "account", value)}
-                    required
-                />
-                </FloatingLabel>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <FloatingLabel label="Banco">
-                <Form.Control
-                    as={IMaskInput}
-                    mask={Number}
-                    type="text"
-                    name="bank"
-                    autoComplete='off'
-                    placeholder="Banco"
-                    onAccept={(value) => handleAccept(setBankingInfo, "bank", value)}
                     required
                 />
                 </FloatingLabel>
