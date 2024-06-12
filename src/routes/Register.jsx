@@ -1,4 +1,4 @@
-import { Container, Form, Button,  Row, Col, FloatingLabel, Image, Tab, Tabs, InputGroup } from "react-bootstrap";
+import { Container, Form, Button,  Row, Col, FloatingLabel, Image, Tab, Tabs, InputGroup, Spinner } from "react-bootstrap";
 
 import signUp from '../assets/sign_up.svg';
 import mailSent from '../assets/mail.svg';
@@ -22,6 +22,9 @@ const Register = () => {
 
     const isFirstTab = activeTab === 0
     const isLastTab = activeTab === 2
+    const ufs = [
+        'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+    ]
 
     const [basicInfo, setBasicInfo] = useState({
         cpf: '',
@@ -40,7 +43,7 @@ const Register = () => {
         complement: '',
         city: '',
         state: '',
-        country: ''
+        country: 'Brasil'
     })
 
     const [documents, setDocuments] = useState({
@@ -51,11 +54,11 @@ const Register = () => {
     })
 
     const handleNextTab = () => {
-        setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1));
+        setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1))
     }
 
     const handlePrevTab = () => {
-        setActiveTab((prevTab) => (isFirstTab ? prevTab : prevTab - 1));
+        setActiveTab((prevTab) => (isFirstTab ? prevTab : prevTab - 1))
     }
 
     const handleSubmit = async (e) => {
@@ -92,8 +95,6 @@ const Register = () => {
                 withCredentials: true
             }
 
-            console.log(requestData)
-
             const response = await automationFetch.post(REGISTER_URL, requestData, config);
 
             if (response.status === 201) {
@@ -127,6 +128,10 @@ const Register = () => {
     }
 
     const handleChange = (setter, fieldName, value) => {
+        if (fieldName === 'state') {
+            const valueUppercase = value.toUpperCase()
+            value = valueUppercase
+        }
         setter(prevState => ({
             ...prevState,
             [fieldName]: value
@@ -161,7 +166,7 @@ const Register = () => {
             }
             const data = await response.json();
             if (data.resultado === '0') {
-                throw new Error('CEP not found');
+                throw new Error('CEP não encontrado');
             }
             setAddress({
                 cep: cep,
@@ -177,7 +182,11 @@ const Register = () => {
     }
     
     const handleCepButtonClick = () => {
-        getCepAddress(address.cep)
+        if (address.cep.length === 8) {
+            getCepAddress(address.cep)
+        } else {
+            setError('Preencha o CEP')
+        }
     }
 
     const basicInfoTab = (
@@ -303,7 +312,7 @@ const Register = () => {
                         onClick={handleCepButtonClick}
                         disabled={isSearchingCep}
                     >
-                      {isSearchingCep ? 'Buscando...' : <FaMagnifyingGlass /> }
+                      {isSearchingCep ? <Spinner animation="border" size="sm" /> : <FaMagnifyingGlass /> }
                     </Button>
                 </InputGroup>
             </Form.Group>
@@ -342,7 +351,6 @@ const Register = () => {
                         autoComplete='off'
                         placeholder="Complemento"
                         onChange={(e) => handleChange(setAddress, e.target.name, e.target.value)}
-                        required
                     />
                 </FloatingLabel>
             </Form.Group>
@@ -361,15 +369,20 @@ const Register = () => {
             </Form.Group>
             <Form.Group className="mb-3">
                 <FloatingLabel label="Estado">
-                    <Form.Control
+                    <Form.Select
                         type="text"
                         name="state"
                         autoComplete='off'
-                        placeholder="Estado"
                         value={address.state}
                         onChange={(e) => handleChange(setAddress, e.target.name, e.target.value)}
                         required
-                    />
+                    >
+                    {ufs.map((uf) => (
+                        <option key={uf} value={uf}>
+                            {uf}
+                        </option>
+                    ))}
+                    </Form.Select>
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -380,8 +393,8 @@ const Register = () => {
                         autoComplete='off'
                         placeholder="País"
                         value={address.country}
-                        onChange={(e) => handleChange(setAddress, e.target.name, e.target.value)}
                         required
+                        disabled
                     />
                 </FloatingLabel>
             </Form.Group>
@@ -492,9 +505,9 @@ const Register = () => {
                                             onClick={handleNextTab}
                                             disabled={isRegistering}
                                         >
-                                            {isRegistering ?
-                                                <span className="spinner-border" role="status"></span> : 
-                                                isLastTab ? 'Enviar' : "Próximo" }
+                                        {isRegistering ? 
+                                            <><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="mx-2"/>Enviando...</> : 
+                                            isLastTab ? 'Enviar' : "Próximo" }
                                         </Button>
                                     </Col>
                                 </Row>
