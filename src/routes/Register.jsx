@@ -21,7 +21,7 @@ const Register = () => {
     const [isRegistering, setRegistering] = useState(false)
 
     const isFirstTab = activeTab === 0
-    const isLastTab = activeTab === 2
+    const isLastTab = activeTab === 3
     const ufs = [
         'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
     ]
@@ -34,6 +34,12 @@ const Register = () => {
         cadasturCnpj: '',
         expireDate: '',
         tradeName: ''
+    })
+
+    const [bankingInfo, setBankingInfo] = useState({
+        agency: '',
+        account: '',
+        bank: ''
     })
 
     const [address, setAddress] = useState({
@@ -50,7 +56,8 @@ const Register = () => {
         documentPhoto: null,
         identitySelfie: null,
         residenceProof: null,
-        cadasturProof: null
+        cadasturProof: null,
+        bankingProof: null
     })
 
     const handleNextTab = () => {
@@ -289,9 +296,56 @@ const Register = () => {
             </Form.Group>
         </Tab>
     )
+    
+    const bankingInfoTab = (
+        <Tab eventKey={1} title="Dados Bancários" key={1}>
+            <Form.Group className="mb-3">
+                <FloatingLabel label="Agência">
+                <Form.Control
+                    as={IMaskInput}
+                    mask={Number}
+                    type="text"
+                    name="agency"
+                    autoComplete='off'
+                    placeholder="Agência"
+                    onAccept={(value) => handleAccept(setBankingInfo, "agency", value)}
+                    required
+                />
+                </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <FloatingLabel label="Conta">
+                <Form.Control
+                    as={IMaskInput}
+                    mask={Number}
+                    type="text"
+                    name="account"
+                    autoComplete='off'
+                    placeholder="Conta"
+                    onAccept={(value) => handleAccept(setBankingInfo, "account", value)}
+                    required
+                />
+                </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <FloatingLabel label="Banco">
+                <Form.Control
+                    as={IMaskInput}
+                    mask={Number}
+                    type="text"
+                    name="bank"
+                    autoComplete='off'
+                    placeholder="Banco"
+                    onAccept={(value) => handleAccept(setBankingInfo, "bank", value)}
+                    required
+                />
+                </FloatingLabel>
+            </Form.Group>
+        </Tab>
+    )
 
     const addressTab = (
-        <Tab eventKey={1} title="Endereço" key={1}>
+        <Tab eventKey={2} title="Endereço" key={2}>
             <Form.Group className="mb-3">
                 <InputGroup>
                     <FloatingLabel label="CEP">
@@ -402,7 +456,7 @@ const Register = () => {
     )
 
     const documentsTab = (
-        <Tab eventKey={2} title="Documentos" key={2}>
+        <Tab eventKey={3} title="Documentos" key={3}>
             <Form.Group className="mb-3">
                 <Form.Label>Foto com documento</Form.Label>
                 <Form.Control
@@ -439,6 +493,15 @@ const Register = () => {
                     required
                 />
             </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label>Comprovante Bancário</Form.Label>
+                <Form.Control
+                    type="file"
+                    name="bankingProof"
+                    // onChange={handleChange}
+                    required
+                />
+            </Form.Group>
         </Tab>
     )
 
@@ -450,6 +513,7 @@ const Register = () => {
             fill
         >
             {basicInfoTab}
+            {bankingInfoTab}
             {addressTab}
             {documentsTab}
         </Tabs>
@@ -457,7 +521,7 @@ const Register = () => {
 
     useEffect(() => {
         setError('');
-    }, [basicInfo, address, activeTab, isSuccess])
+    }, [basicInfo, bankingInfo, address, activeTab, isSuccess])
 
     return (
         <>
