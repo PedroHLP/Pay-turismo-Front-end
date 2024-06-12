@@ -144,6 +144,22 @@ const Register = () => {
     const handleFileChange = (event) => {
         const { name } = event.target
         const selectedFile = event.target.files[0]
+
+        const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf']
+        const fileExtension = selectedFile.name.slice(selectedFile.name.lastIndexOf('.')).toLowerCase()
+        if (!allowedExtensions.includes(fileExtension)) {
+            setError('Selecione uma extensão válida (.png, .jpg, .pdf)')
+            event.target.value = null
+            return
+        }
+
+        const fileSizeInMB = selectedFile.size / (1024 * 1024);
+        if (fileSizeInMB > 1) {
+            setError('O arquivo não pode ultrapassar 1 MB!')
+            event.target.value = null
+            return
+        }
+
         setDocuments(prevState => ({
             ...prevState,
             [name]: selectedFile
@@ -526,7 +542,7 @@ const Register = () => {
 
     useEffect(() => {
         setError('');
-    }, [basicInfo, bankingInfo, address, activeTab, isSuccess])
+    }, [basicInfo, bankingInfo, address, documents, activeTab, isSuccess])
 
     return (
         <>
