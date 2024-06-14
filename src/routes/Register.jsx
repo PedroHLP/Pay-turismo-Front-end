@@ -27,40 +27,6 @@ const Register = () => {
     ]
 
     const [basicInfo, setBasicInfo] = useState({
-        cpf: '92309013501',
-        name: 'Débora Mariah Antonella Lopes',
-        email: 'lucasgabriel@allinformatica.com.br',
-        phone: '62981998803',
-        cadasturCnpj: '84349766000176',
-        expireDate: '2024-06-14',
-        tradeName: 'Ghost of Sparta'
-    })
-
-    const [bankingInfo, setBankingInfo] = useState({
-        agency: '6644',
-        account: '1151635',
-        bank: '257'
-    })
-
-    const [address, setAddress] = useState({
-        cep: '05711001',
-        address: 'Rua Doutor Luiz Migliano',
-        number: '1986',
-        complement: 'Conjunto 2103',
-        city: 'São Paulo',
-        state: 'SP',
-        country: 'Brasil'
-    })
-
-    const [documents, setDocuments] = useState({
-        documentPhoto: null,
-        identitySelfie: null,
-        residenceProof: null,
-        cadasturProof: null,
-        bankingProof: null
-    })
-
-    /* const [basicInfo, setBasicInfo] = useState({
         cpf: '',
         name: '',
         email: '',
@@ -92,7 +58,7 @@ const Register = () => {
         residenceProof: null,
         cadasturProof: null,
         bankingProof: null
-    }) */
+    })
 
     const handleNextTab = () => {
         setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1))
