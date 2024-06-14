@@ -1,7 +1,7 @@
 # Etapa de construção
 # Aqui usamos a imagem mais recente do Node.js disponível no Docker Hub.
 # Esta imagem será usada para construir o projeto React.
-FROM node:20.10.0 as build
+FROM node:20.14.0 as build
 
 # Define o diretório de trabalho dentro do contêiner.
 # Este é o diretório onde todos os comandos serão executados.
