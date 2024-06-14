@@ -27,6 +27,40 @@ const Register = () => {
     ]
 
     const [basicInfo, setBasicInfo] = useState({
+        cpf: '92309013501',
+        name: 'Débora Mariah Antonella Lopes',
+        email: 'lucasgabriel@allinformatica.com.br',
+        phone: '62981998803',
+        cadasturCnpj: '84349766000176',
+        expireDate: '2024-06-14',
+        tradeName: 'Ghost of Sparta'
+    })
+
+    const [bankingInfo, setBankingInfo] = useState({
+        agency: '6644',
+        account: '1151635',
+        bank: '257'
+    })
+
+    const [address, setAddress] = useState({
+        cep: '05711001',
+        address: 'Rua Doutor Luiz Migliano',
+        number: '1986',
+        complement: 'Conjunto 2103',
+        city: 'São Paulo',
+        state: 'SP',
+        country: 'Brasil'
+    })
+
+    const [documents, setDocuments] = useState({
+        documentPhoto: null,
+        identitySelfie: null,
+        residenceProof: null,
+        cadasturProof: null,
+        bankingProof: null
+    })
+
+    /* const [basicInfo, setBasicInfo] = useState({
         cpf: '',
         name: '',
         email: '',
@@ -58,7 +92,7 @@ const Register = () => {
         residenceProof: null,
         cadasturProof: null,
         bankingProof: null
-    })
+    }) */
 
     const handleNextTab = () => {
         setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1))
@@ -92,17 +126,36 @@ const Register = () => {
                 state: address.state,
                 country: address.country,
                 registrationStatus: "PENDING",
-                notes: "No additional notes."
+                notes: "No additional notes.",
+                bank: bankingInfo.bank,
+                agency: bankingInfo.agency,
+                account: bankingInfo.account
             }
+
+            const formData = new FormData();
+
+            Object.entries(requestData).forEach(([key, value]) => {
+                if (value !== null && value !== undefined) {
+                    formData.append(key, value);
+                }
+            })
+            
+            formData.append("documentPhoto", documents.documentPhoto)
+            formData.append("identificationSelfie", documents.identitySelfie)
+            formData.append("residenceProof", documents.residenceProof)
+            formData.append("cadasturProof", documents.cadasturProof)
+            formData.append("bankingProof", documents.bankingProof)
+
+            console.log(formData)
 
             const config = {
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
                 },
                 withCredentials: true
             }
 
-            const response = await automationFetch.post(REGISTER_URL, requestData, config);
+            const response = await automationFetch.post(REGISTER_URL, formData, config);
 
             if (response.status === 201) {
                 setSuccess(true)
@@ -230,6 +283,7 @@ const Register = () => {
                     autoComplete='off'
                     placeholder="CPF"
                     onAccept={(value) => handleAccept(setBasicInfo, "cpf", value)}
+                    value={basicInfo.cpf}
                     required
                 />
                 </FloatingLabel>
@@ -242,6 +296,7 @@ const Register = () => {
                         autoComplete='off'
                         placeholder="Nome"
                         onChange={(e) => handleChange(setBasicInfo, e.target.name, e.target.value)}
+                        value={basicInfo.name}
                         required
                     />
                 </FloatingLabel>
@@ -254,6 +309,7 @@ const Register = () => {
                         autoComplete='off'
                         placeholder="Email"
                         onChange={(e) => handleChange(setBasicInfo, e.target.name, e.target.value)}
+                        value={basicInfo.email}
                         required
                     />
                 </FloatingLabel>
@@ -269,6 +325,7 @@ const Register = () => {
                         autoComplete='off'
                         placeholder="Celular"
                         onAccept={(value) => handleAccept(setBasicInfo, "phone", value)}
+                        value={basicInfo.phone}
                         required
                     />
                 </FloatingLabel>
@@ -284,6 +341,7 @@ const Register = () => {
                     autoComplete='off'
                     placeholder="CNPJ"
                     onAccept={(value) => handleAccept(setBasicInfo, "cadasturCnpj", value)}
+                    value={basicInfo.cadasturCnpj}
                     required
                 />
                 </FloatingLabel>
@@ -299,6 +357,7 @@ const Register = () => {
                     autoComplete='off'
                     placeholder="Vencimento"
                     onAccept={(value) => handleAccept(setBasicInfo, "expireDate", value)}
+                    // value={basicInfo.expireDate}
                     required
                 />
                 </FloatingLabel>
@@ -311,6 +370,7 @@ const Register = () => {
                     autoComplete='off'
                     placeholder="Nome Fantasia Agencia"
                     onChange={(e) => handleChange(setBasicInfo, e.target.name, e.target.value)}
+                    value={basicInfo.tradeName}
                     required
                 />
                 </FloatingLabel>
@@ -330,6 +390,7 @@ const Register = () => {
                     autoComplete='off'
                     placeholder="Banco"
                     onAccept={(value) => handleAccept(setBankingInfo, "bank", value)}
+                    value={bankingInfo.bank}
                     required
                 />
                 </FloatingLabel>
@@ -344,6 +405,7 @@ const Register = () => {
                     autoComplete='off'
                     placeholder="Agência"
                     onAccept={(value) => handleAccept(setBankingInfo, "agency", value)}
+                    value={bankingInfo.agency}
                     required
                 />
                 </FloatingLabel>
@@ -358,6 +420,7 @@ const Register = () => {
                     autoComplete='off'
                     placeholder="Conta"
                     onAccept={(value) => handleAccept(setBankingInfo, "account", value)}
+                    value={bankingInfo.account}
                     required
                 />
                 </FloatingLabel>
@@ -379,6 +442,7 @@ const Register = () => {
                             autoComplete='off'
                             placeholder="CEP"
                             onAccept={(value) => handleAccept(setAddress, "cep", value)}
+                            value={address.cep}
                             required
                         />
                     </FloatingLabel>
@@ -414,6 +478,7 @@ const Register = () => {
                         autoComplete='off'
                         placeholder="Number"
                         onAccept={(value) => handleAccept(setAddress, "number", value)}
+                        value={address.number}
                         required
                     />
                 </FloatingLabel>
@@ -426,6 +491,7 @@ const Register = () => {
                         autoComplete='off'
                         placeholder="Complemento"
                         onChange={(e) => handleChange(setAddress, e.target.name, e.target.value)}
+                        value={address.complement}
                     />
                 </FloatingLabel>
             </Form.Group>
