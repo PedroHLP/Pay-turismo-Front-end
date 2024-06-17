@@ -349,13 +349,11 @@ const Register = () => {
             <Form.Group className="mb-3">
                 <FloatingLabel label="Banco">
                 <Form.Control
-                    as={IMaskInput}
-                    mask={Number}
                     type="text"
                     name="bank"
                     autoComplete='off'
                     placeholder="Banco"
-                    onAccept={(value) => handleAccept(setBankingInfo, "bank", value)}
+                    onChange={(e) => handleChange(setBankingInfo, e.target.name, e.target.value)}
                     value={bankingInfo.bank}
                     required
                 />
@@ -364,13 +362,11 @@ const Register = () => {
             <Form.Group className="mb-3">
                 <FloatingLabel label="Agência">
                 <Form.Control
-                    as={IMaskInput}
-                    mask={Number}
                     type="text"
                     name="agency"
                     autoComplete='off'
                     placeholder="Agência"
-                    onAccept={(value) => handleAccept(setBankingInfo, "agency", value)}
+                    onChange={(e) => handleChange(setBankingInfo, e.target.name, e.target.value)}
                     value={bankingInfo.agency}
                     required
                 />
@@ -379,13 +375,11 @@ const Register = () => {
             <Form.Group className="mb-3">
                 <FloatingLabel label="Conta">
                 <Form.Control
-                    as={IMaskInput}
-                    mask={Number}
                     type="text"
                     name="account"
                     autoComplete='off'
                     placeholder="Conta"
-                    onAccept={(value) => handleAccept(setBankingInfo, "account", value)}
+                    onChange={(e) => handleChange(setBankingInfo, e.target.name, e.target.value)}
                     value={bankingInfo.account}
                     required
                 />
