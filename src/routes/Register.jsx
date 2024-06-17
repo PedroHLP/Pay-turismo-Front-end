@@ -1,4 +1,4 @@
-import { Container, Form, Button,  Row, Col, FloatingLabel, Image, Tab, Tabs, InputGroup, Spinner } from "react-bootstrap";
+import { Container, Form, Button,  Row, Col, FloatingLabel, Image, Tab, Tabs, InputGroup, Spinner, Alert } from "react-bootstrap";
 
 import signUp from '../assets/sign_up.svg';
 import mailSent from '../assets/mail.svg';
@@ -75,7 +75,7 @@ const Register = () => {
         try {
             const requestData = {
                 name: basicInfo.name,
-                login: "johndoe",
+                login: basicInfo.cpf,
                 password: "securepassword123",
                 userRole: "USER",
                 cpf: basicInfo.cpf,
@@ -580,7 +580,6 @@ const Register = () => {
         <>
         <div className="d-flex justify-content-center align-items-center vh-100">
             <Container>
-                <p className="text-danger text-center" aria-live="assertive">{error}</p>
                 {isSuccess ? (
                     <div>
                         <Row>
@@ -591,18 +590,18 @@ const Register = () => {
                                 <div className="fs-5">
                                     Um e-mail foi enviado para <span className="fw-bold text-primary fs-5">{basicInfo.email}</span>, abra-o para dar continuidade com verificação de identidade.
                                 </div>
-                                <div className="my-3">
-                                    <Link to='/login' className="link-secondary">Voltar para a tela de login</Link>
-                                </div>
                             </div>
                         </Row>
                     </div>
                 ) : (
                     <Row className="align-items-center" xs={1} md={2}>
                         <Col className="py-4">
-                            <div className="text-center"><Image src={signUp} width={300}/></div>
+                            <div className="text-center"><Image src={signUp} fluid/></div>
                         </Col>
                         <Col>
+                            <Alert key='danger' variant='danger' className={`text-center ${error === '' ? 'visually-hidden' : ''}`} >
+                                {error}
+                            </Alert>
                             <Form onSubmit={handleSubmit}>
                                 {formTabs}
                                 <Row className="mb-3" xs={isFirstTab ? 1 : 2}>
@@ -628,11 +627,13 @@ const Register = () => {
                                         </Button>
                                     </Col>
                                 </Row>
-                                <Link to='/login' className="link-secondary text-decoration-none">Entrar</Link>
                             </Form>
                         </Col>
                     </Row>
                 )}
+                <div className="position-absolute top-0 start-0 p-2">
+                    <Link to='/' className="link-secondary">&lt; Voltar para o início</Link>
+                </div>
             </Container>
         </div>
         </>
