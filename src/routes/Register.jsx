@@ -237,7 +237,7 @@ const Register = () => {
     }
 
     const basicInfoTab = (
-        <Tab eventKey={0} title="Informações Básicas" key={0}>
+        <Tab eventKey={0} title="Informações Básicas" key={0} disabled>
             <Form.Group className="mb-3">
                 <FloatingLabel label="CPF">
                 <Form.Control
@@ -345,7 +345,7 @@ const Register = () => {
     )
     
     const bankingInfoTab = (
-        <Tab eventKey={1} title="Dados Bancários" key={1}>
+        <Tab eventKey={1} title="Dados Bancários" key={1} disabled>
             <Form.Group className="mb-3">
                 <FloatingLabel label="Banco">
                 <Form.Control
@@ -395,7 +395,7 @@ const Register = () => {
     )
 
     const addressTab = (
-        <Tab eventKey={2} title="Endereço" key={2}>
+        <Tab eventKey={2} title="Endereço" key={2} disabled>
             <Form.Group className="mb-3">
                 <InputGroup>
                     <FloatingLabel label="CEP">
@@ -509,7 +509,7 @@ const Register = () => {
     )
 
     const documentsTab = (
-        <Tab eventKey={3} title="Documentos" key={3}>
+        <Tab eventKey={3} title="Documentos" key={3} disabled>
             <Form.Group className="mb-3">
                 <Form.Label>Foto com documento</Form.Label>
                 <Form.Control
@@ -562,7 +562,6 @@ const Register = () => {
         <Tabs
             className="mb-3" 
             activeKey={activeTab}
-            onSelect={(k) => setActiveTab(parseInt(k, 10))}
             fill
         >
             {basicInfoTab}
@@ -605,25 +604,33 @@ const Register = () => {
                             <Form onSubmit={handleSubmit}>
                                 {formTabs}
                                 <Row className="mb-3" xs={isFirstTab ? 1 : 2}>
-                                    <Col>
+                                    <Col className={isFirstTab ? "visually-hidden" : ''}>
                                         <Button
-                                            className={isFirstTab ? "visually-hidden" : 'w-100'}
+                                            className='w-100'
                                             variant="secondary"
                                             onClick={handlePrevTab}
                                         >
                                         Anterior
                                         </Button>
                                     </Col>
-                                    <Col>
+                                    <Col className={isLastTab ? "visually-hidden" : ''}>
                                         <Button
-                                            type={isLastTab ? 'submit' : 'button'}
-                                            className="w-100"
+                                            className='w-100'
+                                            variant="primary"
                                             onClick={handleNextTab}
+                                        >
+                                            Próximo
+                                        </Button>
+                                    </Col>
+                                    <Col className={isLastTab ? '' : "visually-hidden"}>
+                                        <Button
+                                            className='w-100'
+                                            type='submit'
                                             disabled={isRegistering}
                                         >
                                         {isRegistering ? 
                                             <><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="mx-2"/>Enviando...</> : 
-                                            isLastTab ? 'Enviar' : "Próximo" }
+                                            'Enviar'}
                                         </Button>
                                     </Col>
                                 </Row>
