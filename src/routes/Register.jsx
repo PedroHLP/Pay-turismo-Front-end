@@ -386,6 +386,12 @@ const Register = () => {
     
     const bankingInfoTab = (
         <Tab eventKey={1} title="Dados Bancários" key={1} disabled>
+            <div className="text-center mb-3" >
+                <Form.Text muted>
+                    <span>CPF: </span>
+                    <span className="ms-1 fw-bold">{basicInfo.cpf}</span>
+                </Form.Text>
+            </div>
             <Form.Group className="mb-3">
             <FloatingLabel label={<span>Banco<span className="text-danger mx-1">*</span></span>}>
                 <Form.Control
