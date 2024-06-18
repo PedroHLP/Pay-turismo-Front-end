@@ -275,7 +275,7 @@ const Register = () => {
     const basicInfoTab = (
         <Tab eventKey={0} title="Informações Básicas" key={0} disabled>
             <Form.Group className="mb-3">
-                <FloatingLabel label="CPF">
+                <FloatingLabel label={<span>CPF<span className="text-danger mx-1">*</span></span>}>
                 <Form.Control
                     as={IMaskInput}
                     mask="000.000.000-00"
@@ -292,7 +292,7 @@ const Register = () => {
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
-                <FloatingLabel label="Nome">
+            <FloatingLabel label={<span>Nome<span className="text-danger mx-1">*</span></span>}>
                     <Form.Control
                         type="text"
                         name="name"
@@ -305,7 +305,7 @@ const Register = () => {
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
-                <FloatingLabel label="Email">
+            <FloatingLabel label={<span>E-mail<span className="text-danger mx-1">*</span></span>}>
                     <Form.Control 
                         type="email"
                         name="email"
@@ -318,7 +318,7 @@ const Register = () => {
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
-                <FloatingLabel label="Celular">
+            <FloatingLabel label={<span>Celular<span className="text-danger mx-1">*</span></span>}>
                     <Form.Control 
                         as={IMaskInput}
                         mask="(00) 00000-0000"
@@ -335,7 +335,7 @@ const Register = () => {
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
-                <FloatingLabel label="CNPJ Cadastur">
+            <FloatingLabel label={<span>CNPJ Cadastur<span className="text-danger mx-1">*</span></span>}>
                 <Form.Control
                     as={IMaskInput}
                     mask="00.000.000/0000-00"
@@ -352,7 +352,7 @@ const Register = () => {
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
-                <FloatingLabel label="Vencimento">
+            <FloatingLabel label={<span>Vencimento<span className="text-danger mx-1">*</span></span>}>
                 <Form.Control
                     as={IMaskInput}
                     mask="00/00/0000"
@@ -369,7 +369,7 @@ const Register = () => {
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
-                <FloatingLabel label="Nome Fantasia Agência">
+            <FloatingLabel label={<span>Nome Fantasia Agência<span className="text-danger mx-1">*</span></span>}>
                 <Form.Control
                     type="text"
                     name="tradeName"
@@ -387,7 +387,7 @@ const Register = () => {
     const bankingInfoTab = (
         <Tab eventKey={1} title="Dados Bancários" key={1} disabled>
             <Form.Group className="mb-3">
-                <FloatingLabel label="Banco">
+            <FloatingLabel label={<span>Banco<span className="text-danger mx-1">*</span></span>}>
                 <Form.Control
                     type="text"
                     name="bank"
@@ -400,7 +400,7 @@ const Register = () => {
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
-                <FloatingLabel label="Agência">
+            <FloatingLabel label={<span>Agência<span className="text-danger mx-1">*</span></span>}>
                 <Form.Control
                     type="text"
                     name="agency"
@@ -413,7 +413,7 @@ const Register = () => {
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
-                <FloatingLabel label="Conta">
+            <FloatingLabel label={<span>Conta<span className="text-danger mx-1">*</span></span>}>
                 <Form.Control
                     type="text"
                     name="account"
@@ -432,7 +432,7 @@ const Register = () => {
         <Tab eventKey={2} title="Endereço" key={2} disabled>
             <Form.Group className="mb-3">
                 <InputGroup>
-                    <FloatingLabel label="CEP">
+                    <FloatingLabel label={<span>CEP<span className="text-danger mx-1">*</span></span>}>
                         <Form.Control
                             as={IMaskInput}
                             mask="00000-000"
@@ -457,7 +457,7 @@ const Register = () => {
                 </InputGroup>
             </Form.Group>
             <Form.Group className="mb-3">
-                <FloatingLabel label="Endereço">
+                <FloatingLabel label={<span>Endereço<span className="text-danger mx-1">*</span></span>}>
                     <Form.Control
                         type="text"
                         name="address"
@@ -470,7 +470,7 @@ const Register = () => {
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
-                <FloatingLabel label="Número">
+                <FloatingLabel label={<span>Número<span className="text-danger mx-1">*</span></span>}>
                     <Form.Control
                         as={IMaskInput}
                         mask={Number}
@@ -497,7 +497,7 @@ const Register = () => {
                 </FloatingLabel>
             </Form.Group>
             <Form.Group className="mb-3">
-                <FloatingLabel label="Cidade">
+                <FloatingLabel label={<span>Cidade<span className="text-danger mx-1">*</span></span>}>
                     <Form.Control
                         type="text"
                         name="city"
@@ -546,7 +546,7 @@ const Register = () => {
     const documentsTab = (
         <Tab eventKey={3} title="Documentos" key={3} disabled>
             <Form.Group className="mb-3">
-                <Form.Label>Foto com documento</Form.Label>
+                <Form.Label>Foto do documento <span className="text-danger mx-1">*</span></Form.Label>
                 <Form.Control
                     type="file"
                     name="documentPhoto"
@@ -555,7 +555,7 @@ const Register = () => {
                 />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>Selfie com identificação</Form.Label>
+                <Form.Label>Selfie com identificação <span className="text-danger mx-1">*</span></Form.Label>
                 <Form.Control
                     type="file"
                     name="identitySelfie"
@@ -564,7 +564,7 @@ const Register = () => {
                 />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>Comprovante de residência</Form.Label>
+                <Form.Label>Comprovante de residência <span className="text-danger mx-1">*</span></Form.Label>
                 <Form.Control
                     type="file"
                     name="residenceProof"
@@ -573,7 +573,7 @@ const Register = () => {
                 />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>Comprovante do Cadastur</Form.Label>
+                <Form.Label>Certificado do Cadastur <span className="text-danger mx-1">*</span></Form.Label>
                 <Form.Control
                     type="file"
                     name="cadasturProof"
@@ -582,7 +582,7 @@ const Register = () => {
                 />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>Comprovante Bancário</Form.Label>
+                <Form.Label>Comprovante Bancário <span className="text-danger mx-1">*</span></Form.Label>
                 <Form.Control
                     type="file"
                     name="bankingProof"
@@ -594,6 +594,8 @@ const Register = () => {
     )
 
     const formTabs = (
+        <>
+        <div className="text-center mb-3"><span className="text-danger mx-1">* Campos obrigatórios</span></div>
         <Tabs
             className="mb-3" 
             activeKey={activeTab}
@@ -604,6 +606,7 @@ const Register = () => {
             {addressTab}
             {documentsTab}
         </Tabs>
+        </>
     )
 
     useEffect(() => {
