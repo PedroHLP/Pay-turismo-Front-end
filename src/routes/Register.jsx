@@ -545,6 +545,18 @@ const Register = () => {
 
     const documentsTab = (
         <Tab eventKey={3} title="Documentos" key={3} disabled>
+            <div className="text-center mb-3" >
+                <Form.Text muted>
+                    <span>Tipos de arquivo permitidos: </span>
+                    <span className="ms-1 fw-bold">.pdf</span>
+                    <span className="ms-1 fw-bold">.jpg</span>
+                    <span className="ms-1 fw-bold">.jpeg</span>
+                    <span className="ms-1 fw-bold">.png</span>
+                    <span className="ms-2">Tamanho máximo: </span>
+                    <span className="ms-1 fw-bold">1 MB</span>
+                </Form.Text>
+            </div>
+            
             <Form.Group className="mb-3">
                 <Form.Label>Foto do documento <span className="text-danger mx-1">*</span></Form.Label>
                 <Form.Control
