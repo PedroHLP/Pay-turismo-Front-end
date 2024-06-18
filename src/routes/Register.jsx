@@ -216,8 +216,9 @@ const Register = () => {
                 throw new Error('CEP não encontrado');
             }
             setAddress({
-                cep: cep,
                 address: data.tipo_logradouro + " " + data.logradouro,
+                number: '',
+                complement: '',
                 city: data.cidade,
                 state: data.uf,
                 country: 'Brasil'
