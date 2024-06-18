@@ -61,7 +61,11 @@ const Register = () => {
     })
 
     const handleNextTab = () => {
-        setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1))
+        if (validateTab()){
+            setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1))
+        } else {
+            setError('Preencha todos os campos obrigatórios')
+        }
     }
 
     const handlePrevTab = () => {
@@ -71,7 +75,9 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setRegistering(true)
-        
+
+        const mySqlExpireDate = formatDateMySql(basicInfo.expireDate)
+
         try {
             const requestData = {
                 name: basicInfo.name,
@@ -83,7 +89,7 @@ const Register = () => {
                 phone: basicInfo.phone,
                 tradingName: basicInfo.tradeName,
                 cnpj: basicInfo.cadasturCnpj,
-                documentExpirationDate: basicInfo.expireDate,
+                documentExpirationDate: mySqlExpireDate,
                 zipCode: address.cep,
                 address: address.address,
                 number: address.number,
@@ -186,16 +192,6 @@ const Register = () => {
     }
 
     const handleAccept = (setter, fieldName, value) => {
-        if (fieldName === 'expireDate' && value.length === 10) {
-            const parts = value.split('/')
-            const day = parseInt(parts[0], 10)
-            const month = parseInt(parts[1], 10) -1
-            const year = parseInt(parts[2], 10)
-            const date = new Date(year, month, day)
-            const mysqlDate = date.toISOString().split('T')[0]
-            value = mysqlDate
-        }
-
         setter(prevState => ({
             ...prevState,
             [fieldName]: value
@@ -216,6 +212,7 @@ const Register = () => {
                 throw new Error('CEP não encontrado');
             }
             setAddress({
+                cep: cep,
                 address: data.tipo_logradouro + " " + data.logradouro,
                 number: '',
                 complement: '',
@@ -230,11 +227,53 @@ const Register = () => {
     }
     
     const handleCepButtonClick = () => {
-        if (address.cep.length === 8) {
+        if (address.cep !== '') {
             getCepAddress(address.cep)
         } else {
             setError('Preencha o CEP')
         }
+    }
+
+    const validateTab = () => {
+        var currentTabInfo = ''
+        switch(activeTab) {
+            case 0:
+                currentTabInfo = basicInfo
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if(!emailRegex.test(basicInfo.email)){
+                    basicInfo.email = ''
+                }
+                break
+            case 1:
+                currentTabInfo = bankingInfo
+                break
+            case 2:
+                currentTabInfo = address
+                break
+            case 3:
+                currentTabInfo = documents
+                break
+        }
+
+        console.log(currentTabInfo)
+
+        const isAllFieldsFilled = Object.keys(currentTabInfo).every(key => {
+            if (key === 'complement') {
+                return true;
+            }
+            return currentTabInfo[key] !== '';
+        });
+        return isAllFieldsFilled
+    }
+
+    const formatDateMySql = (unformattedDate) => {
+        const parts = unformattedDate.split('/')
+        const day = parseInt(parts[0], 10)
+        const month = parseInt(parts[1], 10) -1
+        const year = parseInt(parts[2], 10)
+        const date = new Date(year, month, day)
+        const mysqlDate = date.toISOString().split('T')[0]
+        return mysqlDate
     }
 
     const basicInfoTab = (
@@ -249,7 +288,8 @@ const Register = () => {
                     name="cpf"
                     autoComplete='off'
                     placeholder="CPF"
-                    onAccept={(value) => handleAccept(setBasicInfo, "cpf", value)}
+                    onComplete={(value) => handleAccept(setBasicInfo, "cpf", value)}
+                    onAccept={() => basicInfo.cpf = ''}
                     value={basicInfo.cpf}
                     required
                 />
@@ -291,7 +331,8 @@ const Register = () => {
                         name="phone"
                         autoComplete='off'
                         placeholder="Celular"
-                        onAccept={(value) => handleAccept(setBasicInfo, "phone", value)}
+                        onComplete={(value) => handleAccept(setBasicInfo, "phone", value)}
+                        onAccept={() => basicInfo.phone = ''}
                         value={basicInfo.phone}
                         required
                     />
@@ -307,7 +348,8 @@ const Register = () => {
                     name="cadasturCnpj"
                     autoComplete='off'
                     placeholder="CNPJ"
-                    onAccept={(value) => handleAccept(setBasicInfo, "cadasturCnpj", value)}
+                    onComplete={(value) => handleAccept(setBasicInfo, "cadasturCnpj", value)}
+                    onAccept={() => basicInfo.cadasturCnpj = ''}
                     value={basicInfo.cadasturCnpj}
                     required
                 />
@@ -323,8 +365,9 @@ const Register = () => {
                     name="expireDate"
                     autoComplete='off'
                     placeholder="Vencimento"
-                    onAccept={(value) => handleAccept(setBasicInfo, "expireDate", value)}
-                    // value={basicInfo.expireDate}
+                    onComplete={(value) => handleAccept(setBasicInfo, "expireDate", value)}
+                    onAccept={() => basicInfo.expireDate = ''}
+                    value={basicInfo.expireDate}
                     required
                 />
                 </FloatingLabel>
@@ -402,7 +445,8 @@ const Register = () => {
                             name="cep"
                             autoComplete='off'
                             placeholder="CEP"
-                            onAccept={(value) => handleAccept(setAddress, "cep", value)}
+                            onComplete={(value) => handleAccept(setAddress, "cep", value)}
+                            onAccept={() => address.cep = ''}
                             value={address.cep}
                             required
                         />
