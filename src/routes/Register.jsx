@@ -118,8 +118,6 @@ const Register = () => {
             formData.append("cadasturProof", documents.cadasturProof)
             formData.append("bankingProof", documents.bankingProof)
 
-            console.log(formData)
-
             const config = {
                 headers: {
                     "Content-Type": "multipart/form-data",
@@ -254,8 +252,6 @@ const Register = () => {
                 currentTabInfo = documents
                 break
         }
-
-        console.log(currentTabInfo)
 
         const isAllFieldsFilled = Object.keys(currentTabInfo).every(key => {
             if (key === 'complement') {
