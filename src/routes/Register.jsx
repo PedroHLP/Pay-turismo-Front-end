@@ -61,6 +61,11 @@ const Register = () => {
     })
 
     const handleNextTab = () => {
+        if (isDateLessThanToday(basicInfo.expireDate)) {
+            setError('A data de vencimento já expirou')
+            return
+        }
+
         if (validateTab()){
             setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1))
         } else {
@@ -270,6 +275,18 @@ const Register = () => {
         const date = new Date(year, month, day)
         const mysqlDate = date.toISOString().split('T')[0]
         return mysqlDate
+    }
+
+    const isDateLessThanToday = (dateString) => {
+        const parts = dateString.split('/');
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parseInt(parts[2], 10);
+        const date = new Date(year, month, day);
+
+        const today = new Date();
+
+        return date < today;
     }
 
     const basicInfoTab = (
