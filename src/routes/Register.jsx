@@ -443,17 +443,14 @@ const Register = () => {
                             placeholder="CEP"
                             onComplete={(value) => handleAccept(setAddress, "cep", value)}
                             onAccept={() => address.cep = ''}
+                            onBlur={handleCepButtonClick}
                             value={address.cep}
                             required
                         />
                     </FloatingLabel>
-                    <Button
-                        variant="outline-secondary"
-                        onClick={handleCepButtonClick}
-                        disabled={isSearchingCep}
-                    >
-                      {isSearchingCep ? <Spinner animation="border" size="sm" /> : <FaMagnifyingGlass /> }
-                    </Button>
+                    <InputGroup.Text className={isSearchingCep ? '' : "visually-hidden"}>
+                        <Spinner animation="border" size="sm" />
+                    </InputGroup.Text>
                 </InputGroup>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -547,7 +544,7 @@ const Register = () => {
         <Tab eventKey={3} title="Documentos" key={3} disabled>
             <div className="text-center mb-3" >
                 <Form.Text muted>
-                    <span>Tipos de arquivo permitidos: </span>
+                    <span>Tipos de arquivos permitidos: </span>
                     <span className="ms-1 fw-bold">.pdf</span>
                     <span className="ms-1 fw-bold">.jpg</span>
                     <span className="ms-1 fw-bold">.jpeg</span>
