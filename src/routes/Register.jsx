@@ -19,6 +19,8 @@ const Register = () => {
     const [isSearchingCep, setSearchingCep] = useState(false)
     const [isSuccess, setSuccess] = useState(false)
     const [isRegistering, setRegistering] = useState(false)
+    const [isCpfValid, setCpfValid] = useState(true)
+    const [isCnpjValid, setCnpjValid] = useState(true)
 
     const isFirstTab = activeTab === 0
     const isLastTab = activeTab === 3
@@ -66,10 +68,10 @@ const Register = () => {
             return
         }
 
-        if (validateTab()){
+        if (validateTab() && isCnpjValid && isCpfValid){
             setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1))
         } else {
-            setError('Preencha todos os campos obrigatórios')
+            setError('Preencha todos os campos obrigatórios corretamente')
         }
     }
 
@@ -289,6 +291,107 @@ const Register = () => {
         return date < today;
     }
 
+    function validateCPF(cpf) {
+        cpf = cpf.toString().replace(/\D/g,''); // Ensure cpf is treated as string
+        if (cpf.length !== 11 || /^(.)\1+$/.test(cpf)) {
+            return false; // Invalid length or all characters are the same
+        }
+    
+        // Validate CPF algorithm
+        let sum = 0;
+        let mod = 0;
+    
+        for (let i = 1; i <= 9; i++) {
+            sum += parseInt(cpf.charAt(i - 1)) * (11 - i);
+        }
+    
+        mod = (sum * 10) % 11;
+    
+        if (mod === 10 || mod === 11) {
+            mod = 0;
+        }
+    
+        if (mod !== parseInt(cpf.charAt(9))) {
+            return false;
+        }
+    
+        sum = 0;
+        for (let i = 1; i <= 10; i++) {
+            sum += parseInt(cpf.charAt(i - 1)) * (12 - i);
+        }
+    
+        mod = (sum * 10) % 11;
+    
+        if (mod === 10 || mod === 11) {
+            mod = 0;
+        }
+    
+        if (mod !== parseInt(cpf.charAt(10))) {
+            return false;
+        }
+    
+        return true;
+    }
+    
+    function validateCNPJ(cnpj) {
+        cnpj = cnpj.toString().replace(/\D/g,''); // Ensure cnpj is treated as string
+        if (cnpj.length !== 14 || /^(.)\1+$/.test(cnpj)) {
+            return false; // Invalid length or all characters are the same
+        }
+    
+        // Validate CNPJ algorithm
+        let size = cnpj.length - 2;
+        let numbers = cnpj.substring(0, size);
+        let digits = cnpj.substring(size);
+        let sum = 0;
+        let pos = size - 7;
+    
+        for (let i = size; i >= 1; i--) {
+            sum += parseInt(numbers.charAt(size - i)) * pos--;
+            if (pos < 2) {
+                pos = 9;
+            }
+        }
+    
+        let result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+    
+        if (result !== parseInt(digits.charAt(0))) {
+            return false;
+        }
+    
+        size = size + 1;
+        numbers = cnpj.substring(0, size);
+        sum = 0;
+        pos = size - 7;
+    
+        for (let i = size; i >= 1; i--) {
+            sum += parseInt(numbers.charAt(size - i)) * pos--;
+            if (pos < 2) {
+                pos = 9;
+            }
+        }
+    
+        result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+    
+        if (result !== parseInt(digits.charAt(1))) {
+            return false;
+        }
+    
+        return true;
+    }
+
+    const handleBlur = (event) => {
+        const { name, value } = event.target
+        var isValid = false
+        if (name === 'cpf') {
+            isValid = validateCPF(value)
+            setCpfValid(isValid)
+        } else if (name === 'cadasturCnpj') {
+            isValid = validateCNPJ(value)
+            setCnpjValid(isValid)
+        }
+    }
+
     const basicInfoTab = (
         <Tab eventKey={0} title="Informações Básicas" key={0} disabled>
             <Form.Group className="mb-3">
@@ -303,10 +406,14 @@ const Register = () => {
                     placeholder="CPF"
                     onComplete={(value) => handleAccept(setBasicInfo, "cpf", value)}
                     onAccept={() => basicInfo.cpf = ''}
+                    onBlur={(event) => handleBlur(event)}
                     value={basicInfo.cpf}
                     required
                 />
                 </FloatingLabel>
+                <Form.Text className={`text-danger fw-bold ${isCpfValid ? 'visually-hidden' : ''}`}>
+                    CPF inválido
+                </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
             <FloatingLabel label={<span>Nome<span className="text-danger mx-1">*</span></span>}>
@@ -363,10 +470,14 @@ const Register = () => {
                     placeholder="CNPJ"
                     onComplete={(value) => handleAccept(setBasicInfo, "cadasturCnpj", value)}
                     onAccept={() => basicInfo.cadasturCnpj = ''}
+                    onBlur={(event) => handleBlur(event)}
                     value={basicInfo.cadasturCnpj}
                     required
                 />
                 </FloatingLabel>
+                <Form.Text className={`text-danger fw-bold ${isCnpjValid ? 'visually-hidden' : ''}`}>
+                    CNPJ inválido
+                </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
             <FloatingLabel label={<span>Vencimento<span className="text-danger mx-1">*</span></span>}>
