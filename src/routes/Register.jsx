@@ -578,7 +578,7 @@ const Register = () => {
             </div>
             
             <Form.Group className="mb-3">
-                <Form.Label>Foto do documento <span className="text-danger mx-1">*</span></Form.Label>
+                <Form.Label>Foto do documento (CNH ou RG) <span className="text-danger mx-1">*</span></Form.Label>
                 <Form.Control
                     type="file"
                     name="documentPhoto"
@@ -605,7 +605,7 @@ const Register = () => {
                 />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>Certificado do Cadastur <span className="text-danger mx-1">*</span></Form.Label>
+                <Form.Label>Certificado Cadastur <span className="text-danger mx-1">*</span></Form.Label>
                 <Form.Control
                     type="file"
                     name="cadasturProof"
