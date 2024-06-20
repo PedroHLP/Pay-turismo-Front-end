@@ -29,6 +29,7 @@ const Register = () => {
     const [cpfExists, setCpfExists] = useState(false)
     const [cpfError, setCpfError] = useState('')
 
+    const [isEmailValid, setEmailValid] = useState(false)
     const [emailExists, setEmailExists] = useState(false)
     const [emailError, setEmailError] = useState('')
 
@@ -85,7 +86,7 @@ const Register = () => {
             return
         }
 
-        if (validateTab() && isCnpjValid && isCpfValid){
+        if (validateTab()){
             setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1))
         } else {
             setError('Preencha todos os campos obrigatórios corretamente')
@@ -98,6 +99,12 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if(!isCpfValid || !isEmailValid || !isCnpjValid) {
+            return
+        } else if (cpfExists || emailExists || phoneExists || cnpjExists){
+            return 
+        }
+
         setRegistering(true)
 
         const mySqlExpireDate = formatDateMySql(basicInfo.expireDate)
@@ -267,9 +274,10 @@ const Register = () => {
         switch(activeTab) {
             case 0:
                 currentTabInfo = basicInfo
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if(!emailRegex.test(basicInfo.email)){
-                    basicInfo.email = ''
+                if(!isCpfValid || !isEmailValid || !isCnpjValid) {
+                    return false
+                } else if (cpfExists || emailExists || phoneExists || cnpjExists){
+                    return false
                 }
                 break
             case 1:
@@ -859,6 +867,7 @@ const Register = () => {
         if (basicInfo.email !== '') {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const isValid = emailRegex.test(basicInfo.email)
+            setEmailValid(isValid)
             if(isValid){
                 checkEmail(basicInfo.email)
                 if (emailExists) {
@@ -866,6 +875,8 @@ const Register = () => {
                 } else {
                     setEmailError('')
                 }
+            } else {
+                setEmailError('E-mail inválido')
             }
         }
     }, [basicInfo.email, emailExists])
