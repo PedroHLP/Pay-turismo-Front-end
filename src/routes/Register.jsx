@@ -15,13 +15,14 @@ const Register = () => {
     const CNPJ_EXIST_URL = '/users/existsByCnpj'
     const EMAIL_EXIST_URL = '/users/existsByEmail'
     const PHONE_EXIST_URL = '/users/existsByPhone'
+    const BANK_BR_URL = 'https://brasilapi.com.br/api/banks/v1/'
 
     const AUTH_KEY = '2123ccb8ca2bc44b390a1e1046a448bf'
     const BASE_URL = 'http://webservice.kinghost.net/web_cep.php'
     
     const [activeTab, setActiveTab] = useState(0)
     const [error, setError] = useState('')
-    const [isSearchingCep, setSearchingCep] = useState(false)
+    const [isSearching, setSearching] = useState(false)
     const [isSuccess, setSuccess] = useState(false)
     const [isRegistering, setRegistering] = useState(false)
     
@@ -42,6 +43,8 @@ const Register = () => {
 
     const [isExpired, setExpired] = useState(false)
     const [expiredError, setExpiredError] = useState('')
+
+    const [bankName, setBankName] = useState('')
 
     const isFirstTab = activeTab === 0
     const isLastTab = activeTab === 3
@@ -234,7 +237,7 @@ const Register = () => {
     const getCepAddress = async (cep) => {
         const urlParameters = `auth=${AUTH_KEY}&formato=json&cep=${cep}`;
         const urlWithParams = `${BASE_URL}?${urlParameters}`;
-        setSearchingCep(true)
+        setSearching(true)
         try {
             const response = await fetch(urlWithParams);
             if (!response.ok) {
@@ -256,14 +259,33 @@ const Register = () => {
         } catch (error) {
             setError(error.message);
         }
-        setSearchingCep(false)
+        setSearching(false)
     }
     
-    const handleCepButtonClick = () => {
-        if (address.cep !== '') {
+    const getBank = async (bankNumber) => {
+        const urlWithParams = BANK_BR_URL + bankNumber
+        setSearching(true)
+        try {
+            const response = await fetch(urlWithParams);
+
+            if (response.ok) {
+                const data = await response.json();
+                setBankName(data.fullName)
+            } else {
+                setBankName('')
+            }
+        } catch (error) {
+            setError(error.message);
+        }
+        setSearching(false)
+    }
+
+    const handleBlur = (event) => {
+        const { name, value } = event.target
+        if (name === 'cep' && value !== '') {
             getCepAddress(address.cep)
-        } else {
-            setError('Preencha o CEP')
+        } else if (name === 'bank' && value !== '') {
+            getBank(bankingInfo.bank)
         }
     }
 
@@ -601,17 +623,28 @@ const Register = () => {
                 </Form.Text>
             </div>
             <Form.Group className="mb-3">
-            <FloatingLabel label={<span>Banco<span className="text-danger mx-1">*</span></span>}>
-                <Form.Control
-                    type="text"
-                    name="bank"
-                    autoComplete='off'
-                    placeholder="Banco"
-                    onChange={(e) => handleChange(setBankingInfo, e.target.name, e.target.value)}
-                    value={bankingInfo.bank}
-                    required
-                />
-                </FloatingLabel>
+                <InputGroup>
+                    <FloatingLabel label={<span>Banco<span className="text-danger mx-1">*</span></span>}>
+                        <Form.Control
+                            as={IMaskInput}
+                            mask={Number}
+                            type="text"
+                            name="bank"
+                            autoComplete='off'
+                            placeholder="Banco"
+                            onComplete={(value) => handleAccept(setBankingInfo, "bank", value)}
+                            onBlur={(event) => handleBlur(event)}
+                            value={bankingInfo.bank}
+                            required
+                        />
+                    </FloatingLabel>
+                    <InputGroup.Text className={isSearching ? '' : "visually-hidden"}>
+                        <Spinner animation="border" size="sm" />
+                    </InputGroup.Text>
+                </InputGroup>
+                <Form.Text>
+                    {bankName}
+                </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
             <FloatingLabel label={<span>Agência<span className="text-danger mx-1">*</span></span>}>
@@ -657,12 +690,12 @@ const Register = () => {
                             placeholder="CEP"
                             onComplete={(value) => handleAccept(setAddress, "cep", value)}
                             onAccept={() => address.cep = ''}
-                            onBlur={handleCepButtonClick}
+                            onBlur={(event) => handleBlur(event)}
                             value={address.cep}
                             required
                         />
                     </FloatingLabel>
-                    <InputGroup.Text className={isSearchingCep ? '' : "visually-hidden"}>
+                    <InputGroup.Text className={isSearching ? '' : "visually-hidden"}>
                         <Spinner animation="border" size="sm" />
                     </InputGroup.Text>
                 </InputGroup>
