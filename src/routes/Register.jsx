@@ -113,11 +113,17 @@ const Register = () => {
 
             const formData = new FormData();
 
+            // Adiciona o JSON ao FormData uma vez, fora do loop
+            formData.append('userRequestDTO', new Blob([JSON.stringify(requestData)], { type: 'application/json' })); // Modificação
+
+            // O loop para adicionar os campos individualmente foi removido
+            /*
             Object.entries(requestData).forEach(([key, value]) => {
                 if (value !== null && value !== undefined) {
                     formData.append(key, value);
                 }
-            })
+            });
+            */
             
             formData.append("documentPhoto", documents.documentPhoto)
             formData.append("identificationSelfie", documents.identitySelfie)
