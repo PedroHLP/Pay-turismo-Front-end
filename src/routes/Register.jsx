@@ -946,72 +946,70 @@ const Register = () => {
 
     return (
         <>
-        <div className="d-flex justify-content-center align-items-center vh-100">
-            <Container>
-                {isSuccess ? (
-                    <div>
-                        <Row>
-                            <div className="text-center"><Image src={mailSent} width={200}/></div>
-                        </Row>
-                        <Row>
-                            <div className="text-center my-5">
-                                <div className="fs-5">
-                                    Um e-mail foi enviado para <span className="fw-bold text-primary fs-5">{basicInfo.email}</span>, abra-o para dar continuidade com verificação de identidade.
-                                </div>
-                            </div>
-                        </Row>
-                    </div>
-                ) : (
-                    <Row className="align-items-center" xs={1} md={2}>
-                        <Col className="py-4">
-                            <div className="text-center"><Image src={signUp} fluid/></div>
-                        </Col>
-                        <Col>
-                            <Alert key='danger' variant='danger' className={`text-center ${error === '' ? 'visually-hidden' : ''}`} >
-                                {error}
-                            </Alert>
-                            <Form onSubmit={handleSubmit}>
-                                {formTabs}
-                                <Row className="mb-3" xs={isFirstTab ? 1 : 2}>
-                                    <Col className={isFirstTab ? "visually-hidden" : ''}>
-                                        <Button
-                                            className='w-100'
-                                            variant="secondary"
-                                            onClick={handlePrevTab}
-                                        >
-                                        Anterior
-                                        </Button>
-                                    </Col>
-                                    <Col className={isLastTab ? "visually-hidden" : ''}>
-                                        <Button
-                                            className='w-100'
-                                            variant="primary"
-                                            onClick={handleNextTab}
-                                        >
-                                            Próximo
-                                        </Button>
-                                    </Col>
-                                    <Col className={isLastTab ? '' : "visually-hidden"}>
-                                        <Button
-                                            className='w-100'
-                                            type='submit'
-                                            disabled={isRegistering}
-                                        >
-                                        {isRegistering ? 
-                                            <><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="mx-2"/>Enviando...</> : 
-                                            'Enviar'}
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </Form>
-                        </Col>
+        <Container className="pt-5">
+            {isSuccess ? (
+                <div>
+                    <Row>
+                        <div className="text-center"><Image src={mailSent} width={200}/></div>
                     </Row>
-                )}
-                <div className="position-absolute top-0 start-0 p-2">
-                    <Link to='/' className="link-secondary">&lt; Voltar para o início</Link>
+                    <Row>
+                        <div className="text-center my-5">
+                            <div className="fs-5">
+                                Um e-mail foi enviado para <span className="fw-bold text-primary fs-5">{basicInfo.email}</span>, abra-o para dar continuidade com verificação de identidade.
+                            </div>
+                        </div>
+                    </Row>
                 </div>
-            </Container>
-        </div>
+            ) : (
+                <Row className="align-items-center" xs={1} md={2}>
+                    <Col className="py-4">
+                        <div className="text-center"><Image src={signUp} fluid/></div>
+                    </Col>
+                    <Col>
+                        <Alert key='danger' variant='danger' className={`text-center ${error === '' ? 'visually-hidden' : ''}`} >
+                            {error}
+                        </Alert>
+                        <Form onSubmit={handleSubmit}>
+                            {formTabs}
+                            <Row className="mb-3" xs={isFirstTab ? 1 : 2}>
+                                <Col className={isFirstTab ? "visually-hidden" : ''}>
+                                    <Button
+                                        className='w-100'
+                                        variant="secondary"
+                                        onClick={handlePrevTab}
+                                    >
+                                    Anterior
+                                    </Button>
+                                </Col>
+                                <Col className={isLastTab ? "visually-hidden" : ''}>
+                                    <Button
+                                        className='w-100'
+                                        variant="primary"
+                                        onClick={handleNextTab}
+                                    >
+                                        Próximo
+                                    </Button>
+                                </Col>
+                                <Col className={isLastTab ? '' : "visually-hidden"}>
+                                    <Button
+                                        className='w-100'
+                                        type='submit'
+                                        disabled={isRegistering}
+                                    >
+                                    {isRegistering ? 
+                                        <><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="mx-2"/>Enviando...</> : 
+                                        'Enviar'}
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Form>
+                    </Col>
+                </Row>
+            )}
+            <div className="position-absolute top-0 start-0 p-2">
+                <Link to='/' className="link-secondary">&lt; Voltar para o início</Link>
+            </div>
+        </Container>
         </>
     )
 }
