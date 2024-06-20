@@ -11,6 +11,11 @@ import automationFetch from "../axios/config";
 const Register = () => {
 
     const REGISTER_URL = '/users/new'
+    const CPF_EXIST_URL = '/users/existsByCpf'
+    const CNPJ_EXIST_URL = '/users/existsByCnpj'
+    const EMAIL_EXIST_URL = '/users/existsByEmail'
+    const PHONE_EXIST_URL = '/users/existsByPhone'
+
     const AUTH_KEY = '2123ccb8ca2bc44b390a1e1046a448bf'
     const BASE_URL = 'http://webservice.kinghost.net/web_cep.php'
     
@@ -19,8 +24,20 @@ const Register = () => {
     const [isSearchingCep, setSearchingCep] = useState(false)
     const [isSuccess, setSuccess] = useState(false)
     const [isRegistering, setRegistering] = useState(false)
-    const [isCpfValid, setCpfValid] = useState(true)
-    const [isCnpjValid, setCnpjValid] = useState(true)
+    
+    const [isCpfValid, setCpfValid] = useState(false)
+    const [cpfExists, setCpfExists] = useState(false)
+    const [cpfError, setCpfError] = useState('')
+
+    const [emailExists, setEmailExists] = useState(false)
+    const [emailError, setEmailError] = useState('')
+
+    const [phoneExists, setPhoneExists] = useState(false)
+    const [phoneError, setPhoneError] = useState('')
+
+    const [isCnpjValid, setCnpjValid] = useState(false)
+    const [cnpjExists, setCnpjExists] = useState(false)
+    const [cnpjError, setCnpjError] = useState('')
 
     const isFirstTab = activeTab === 0
     const isLastTab = activeTab === 3
@@ -298,7 +315,7 @@ const Register = () => {
     }
 
     function validateCPF(cpf) {
-        cpf = cpf.toString().replace(/\D/g,''); // Ensure cpf is treated as string
+        cpf = cpf.toString(); // Ensure cpf is treated as string
         if (cpf.length !== 11 || /^(.)\1+$/.test(cpf)) {
             return false; // Invalid length or all characters are the same
         }
@@ -386,15 +403,59 @@ const Register = () => {
         return true;
     }
 
-    const handleBlur = (event) => {
-        const { name, value } = event.target
-        var isValid = false
-        if (name === 'cpf') {
-            isValid = validateCPF(value)
-            setCpfValid(isValid)
-        } else if (name === 'cadasturCnpj') {
-            isValid = validateCNPJ(value)
-            setCnpjValid(isValid)
+    const checkCpf = async () => {
+        try {
+            const response = await automationFetch.get(CPF_EXIST_URL, {
+                params: {
+                    cpf: basicInfo.cpf
+                }
+            })
+            const data = await response.data
+            setCpfExists(data)
+        } catch (error) {
+            setError(error.message)
+        }
+    }
+
+    const checkEmail = async () => {
+        try {
+            const response = await automationFetch.get(EMAIL_EXIST_URL, {
+                params: {
+                    email: basicInfo.email
+                }
+            })
+            const data = await response.data
+            setEmailExists(data)
+        } catch (error) {
+            setError(error.message)
+        }
+    }
+
+    const checkPhone = async () => {
+        try {
+            const response = await automationFetch.get(PHONE_EXIST_URL, {
+                params: {
+                    phone: basicInfo.phone
+                }
+            })
+            const data = await response.data
+            setPhoneExists(data)
+        } catch (error) {
+            setError(error.message)
+        }
+    }
+
+    const checkCnpj = async () => {
+        try {
+            const response = await automationFetch.get(CNPJ_EXIST_URL, {
+                params: {
+                    cnpj: basicInfo.cadasturCnpj
+                }
+            })
+            const data = await response.data
+            setCnpjExists(data)
+        } catch (error) {
+            setError(error.message)
         }
     }
 
@@ -412,13 +473,12 @@ const Register = () => {
                     placeholder="CPF"
                     onComplete={(value) => handleAccept(setBasicInfo, "cpf", value)}
                     onAccept={() => basicInfo.cpf = ''}
-                    onBlur={(event) => handleBlur(event)}
                     value={basicInfo.cpf}
                     required
                 />
                 </FloatingLabel>
-                <Form.Text className={`text-danger fw-bold ${isCpfValid ? 'visually-hidden' : ''}`}>
-                    CPF inválido
+                <Form.Text className='text-danger fw-bold'>
+                    {cpfError}
                 </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -446,6 +506,9 @@ const Register = () => {
                         required
                     />
                 </FloatingLabel>
+                <Form.Text className='text-danger fw-bold'>
+                    {emailError}
+                </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
             <FloatingLabel label={<span>Celular<span className="text-danger mx-1">*</span></span>}>
@@ -463,6 +526,9 @@ const Register = () => {
                         required
                     />
                 </FloatingLabel>
+                <Form.Text className='text-danger fw-bold'>
+                    {phoneError}
+                </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
             <FloatingLabel label={<span>CNPJ Cadastur<span className="text-danger mx-1">*</span></span>}>
@@ -476,13 +542,12 @@ const Register = () => {
                     placeholder="CNPJ"
                     onComplete={(value) => handleAccept(setBasicInfo, "cadasturCnpj", value)}
                     onAccept={() => basicInfo.cadasturCnpj = ''}
-                    onBlur={(event) => handleBlur(event)}
                     value={basicInfo.cadasturCnpj}
                     required
                 />
                 </FloatingLabel>
-                <Form.Text className={`text-danger fw-bold ${isCnpjValid ? 'visually-hidden' : ''}`}>
-                    CNPJ inválido
+                <Form.Text className='text-danger fw-bold'>
+                    {cnpjError}
                 </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -761,6 +826,66 @@ const Register = () => {
     useEffect(() => {
         setError('');
     }, [basicInfo, bankingInfo, address, documents, activeTab, isSuccess])
+    
+    useEffect(() => {
+        if (basicInfo.cpf !== '') {
+            const isValid = validateCPF(basicInfo.cpf)
+            setCpfValid(isValid)
+            if (isValid) {
+                checkCpf(basicInfo.cpf)
+                if (cpfExists) {
+                    setCpfError('CPF já cadastrado')
+                } else {
+                    setCpfError('')
+                }
+            } else {
+                setCpfError('CPF inválido')
+            }
+        }
+    }, [basicInfo.cpf, cpfExists])
+
+    useEffect(() => {
+        if (basicInfo.phone !== '') {
+            checkPhone(basicInfo.phone)
+            if (phoneExists) {
+                setPhoneError('Celular já cadastrado')
+            } else {
+                setPhoneError('')
+            }
+        }
+    }, [basicInfo.phone, phoneExists])
+
+    useEffect(() => {
+        if (basicInfo.email !== '') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isValid = emailRegex.test(basicInfo.email)
+            if(isValid){
+                checkEmail(basicInfo.email)
+                if (emailExists) {
+                    setEmailError('E-mail já cadastrado')
+                } else {
+                    setEmailError('')
+                }
+            }
+        }
+    }, [basicInfo.email, emailExists])
+
+    useEffect(() => {
+        if (basicInfo.cadasturCnpj !== '') {
+            const isValid = validateCNPJ(basicInfo.cadasturCnpj)
+            setCnpjValid(isValid)
+            if (isValid) {
+                checkCnpj(basicInfo.cpf)
+                if (cnpjExists) {
+                    setCnpjError('CNPJ já cadastrado')
+                } else {
+                    setCnpjError('')
+                }
+            } else {
+                setCnpjError('CNPJ inválido')
+            }
+        }
+    }, [basicInfo.cadasturCnpj, cnpjExists])
 
     return (
         <>
