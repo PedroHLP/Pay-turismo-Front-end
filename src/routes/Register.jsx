@@ -40,6 +40,9 @@ const Register = () => {
     const [cnpjExists, setCnpjExists] = useState(false)
     const [cnpjError, setCnpjError] = useState('')
 
+    const [isExpired, setExpired] = useState(false)
+    const [expiredError, setExpiredError] = useState('')
+
     const isFirstTab = activeTab === 0
     const isLastTab = activeTab === 3
     const ufs = [
@@ -81,11 +84,6 @@ const Register = () => {
     })
 
     const handleNextTab = () => {
-        if (isDateLessThanToday(basicInfo.expireDate)) {
-            setError('A data de vencimento já expirou')
-            return
-        }
-
         if (validateTab()){
             setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1))
         } else {
@@ -276,7 +274,7 @@ const Register = () => {
                 currentTabInfo = basicInfo
                 if(!isCpfValid || !isEmailValid || !isCnpjValid) {
                     return false
-                } else if (cpfExists || emailExists || phoneExists || cnpjExists){
+                } else if (cpfExists || emailExists || phoneExists || cnpjExists || isExpired){
                     return false
                 }
                 break
@@ -310,7 +308,7 @@ const Register = () => {
         return mysqlDate
     }
 
-    const isDateLessThanToday = (dateString) => {
+    const checkExpiredDate = (dateString) => {
         const parts = dateString.split('/');
         const day = parseInt(parts[0], 10);
         const month = parseInt(parts[1], 10) - 1;
@@ -574,6 +572,9 @@ const Register = () => {
                     required
                 />
                 </FloatingLabel>
+                <Form.Text className='text-danger fw-bold'>
+                    {expiredError}
+                </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
             <FloatingLabel label={<span>Nome Fantasia Agência<span className="text-danger mx-1">*</span></span>}>
@@ -897,6 +898,18 @@ const Register = () => {
             }
         }
     }, [basicInfo.cadasturCnpj, cnpjExists])
+
+    useEffect(() => {
+        if (basicInfo.expireDate !== '') {
+            const isExpired = checkExpiredDate(basicInfo.expireDate)
+            setExpired(isExpired)
+            if (isExpired) {
+                setExpiredError('Vencimento expirado')
+            } else {
+                setExpiredError('')
+            }
+        }
+    }, [basicInfo.expireDate, isExpired])
 
     return (
         <>
