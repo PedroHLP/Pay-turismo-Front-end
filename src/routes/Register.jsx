@@ -29,7 +29,7 @@ const Register = () => {
   const PHONE_EXIST_URL = "/users/existsByPhone";
   const BANK_BR_URL = "https://brasilapi.com.br/api/banks/v1/";
 
-  const [activeTab, setActiveTab] = useState(2);
+  const [activeTab, setActiveTab] = useState(0);
   const [error, setError] = useState("");
   const [isSearching, setSearching] = useState(false);
   const [isSuccess, setSuccess] = useState(false);
