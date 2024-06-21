@@ -29,9 +29,6 @@ const Register = () => {
   const PHONE_EXIST_URL = "/users/existsByPhone";
   const BANK_BR_URL = "https://brasilapi.com.br/api/banks/v1/";
 
-  const AUTH_KEY = "2123ccb8ca2bc44b390a1e1046a448bf";
-  const BASE_URL = "http://webservice.kinghost.net/web_cep.php";
-
   const [activeTab, setActiveTab] = useState(2);
   const [error, setError] = useState("");
   const [isSearching, setSearching] = useState(false);
@@ -293,8 +290,7 @@ const Register = () => {
     };
 
   const getCepAddress = async (cep) => {
-    const urlParameters = `auth=${AUTH_KEY}&formato=json&cep=${cep}`;
-    const urlWithParams = `${BASE_URL}?${urlParameters}`;
+    const urlWithParams = `https://viacep.com.br/ws/${cep}/json/`;
     setSearching(true);
     try {
       const response = await fetch(urlWithParams);
@@ -307,10 +303,10 @@ const Register = () => {
       }
       setAddress({
         cep: cep,
-        address: data.tipo_logradouro + " " + data.logradouro,
+        address: data.logradouro,
         number: "",
         complement: "",
-        city: data.cidade,
+        city: data.localidade,
         state: data.uf,
         country: "Brasil",
       });
