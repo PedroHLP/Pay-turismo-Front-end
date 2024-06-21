@@ -128,7 +128,7 @@ const Register = () => {
     if (validateTab()) {
       setActiveTab((prevTab) => (isLastTab ? prevTab : prevTab + 1));
     } else {
-      setError("Preencha todos os campos obrigatórios corretamente");
+      setError('Preencha os campos corretamente');
     }
   };
 
@@ -1122,10 +1122,8 @@ const Register = () => {
           </div>
         ) : (
           <Row className="align-items-center" xs={1} md={2}>
-            <Col className="py-4">
-              <div className="text-center">
-                <Image src={signUp} fluid />
-              </div>
+            <Col className="d-none d-sm-block">
+                <Image src={signUp} fluid/>
             </Col>
             <Col>
               <Alert
