@@ -18,8 +18,8 @@ import mailSent from "../assets/mail.svg";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { IMaskInput } from "react-imask";
-import { FaMagnifyingGlass } from "react-icons/fa6";
 import automationFetch from "../axios/config";
+import SearchCity from "../components/SearchCity";
 
 const Register = () => {
   const REGISTER_URL = "/users/new";
@@ -32,7 +32,7 @@ const Register = () => {
   const AUTH_KEY = "2123ccb8ca2bc44b390a1e1046a448bf";
   const BASE_URL = "http://webservice.kinghost.net/web_cep.php";
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(2);
   const [error, setError] = useState("");
   const [isSearching, setSearching] = useState(false);
   const [isSuccess, setSuccess] = useState(false);
@@ -803,6 +803,13 @@ const Register = () => {
     </Tab>
   );
 
+  const handleCitySelect = (city) => {
+    setAddress((prevState) => ({
+      ...prevState,
+      ['city']: city,
+    }));
+  };
+
   const addressTab = (
     <Tab eventKey={2} title="Endereço" key={2} disabled>
       <Form.Group className="mb-3">
@@ -902,27 +909,7 @@ const Register = () => {
           />
         </FloatingLabel>
       </Form.Group>
-      <Form.Group className="mb-3">
-        <FloatingLabel
-          label={
-            <span>
-              Cidade<span className="text-danger mx-1">*</span>
-            </span>
-          }
-        >
-          <Form.Control
-            type="text"
-            name="city"
-            autoComplete="off"
-            placeholder="Cidade"
-            value={address.city}
-            onChange={(e) =>
-              handleChange(setAddress, e.target.name, e.target.value)
-            }
-            required
-          />
-        </FloatingLabel>
-      </Form.Group>
+      <SearchCity onCitySelect={handleCitySelect} selectedCity={address.city} />
       <Form.Group className="mb-3">
         <FloatingLabel label="Estado">
           <Form.Select
