@@ -58,6 +58,8 @@ const Register = () => {
 
   const [bankName, setBankName] = useState("");
 
+  const [isWithoutNumber, setIsWithoutNumber] = useState(false);
+
   const isFirstTab = activeTab === 0;
   const isLastTab = activeTab === 3;
   const ufs = [
@@ -276,6 +278,19 @@ const Register = () => {
       [fieldName]: value,
     }));
   };
+
+    const handleCheckboxChange = (e) => {
+        const isChecked = e.target.checked;
+        var number = ""
+
+        setIsWithoutNumber(isChecked);
+        if(isChecked) number = "S/N";
+        
+        setAddress((prevState) => ({
+            ...prevState,
+            ['number']: number,
+        }));
+    };
 
   const getCepAddress = async (cep) => {
     const urlParameters = `auth=${AUTH_KEY}&formato=json&cep=${cep}`;
@@ -840,27 +855,39 @@ const Register = () => {
           />
         </FloatingLabel>
       </Form.Group>
-      <Form.Group className="mb-3">
-        <FloatingLabel
-          label={
-            <span>
-              Número<span className="text-danger mx-1">*</span>
-            </span>
-          }
-        >
-          <Form.Control
-            as={IMaskInput}
-            mask={Number}
-            type="text"
-            name="number"
-            autoComplete="off"
-            placeholder="Number"
-            onAccept={(value) => handleAccept(setAddress, "number", value)}
-            value={address.number}
-            required
-          />
-        </FloatingLabel>
-      </Form.Group>
+    <Form.Group className="mb-3">
+        <InputGroup>
+            <FloatingLabel
+                label={
+                    <span>
+                    Número<span className="text-danger mx-1">*</span>
+                    </span>
+                }
+            >
+                <Form.Control
+                as={IMaskInput}
+                mask={Number}
+                type="text"
+                name="number"
+                autoComplete="off"
+                placeholder="Number"
+                onAccept={(value) => handleAccept(setAddress, "number", value)}
+                value={address.number}
+                disabled={isWithoutNumber}
+                required
+                />
+            </FloatingLabel>
+            <InputGroup.Text>
+                <Form.Check 
+                    type="checkbox"
+                    label="S/N"
+                    className="ms-1"
+                    checked={isWithoutNumber}
+                    onChange={(e) => handleCheckboxChange(e)}
+                />
+            </InputGroup.Text>
+        </InputGroup>
+    </Form.Group>
       <Form.Group className="mb-3">
         <FloatingLabel label="Complemento">
           <Form.Control
