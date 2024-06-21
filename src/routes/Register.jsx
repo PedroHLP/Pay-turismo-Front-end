@@ -1108,6 +1108,12 @@ const Register = () => {
     }
   }, [basicInfo.expireDate, isExpired]);
 
+  useEffect(() => {
+    if (address.number !== "S/N"){
+      setIsWithoutNumber(false);
+    }
+  }, [address.number])
+
   return (
     <>
       <Container className="pt-5">
