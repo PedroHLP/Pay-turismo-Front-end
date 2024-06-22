@@ -18,7 +18,7 @@ import useAuth from '../hooks/useAuth';
 
 import logo from '../assets/logo-w3l.png';
 import { Image } from 'react-bootstrap';
-import { FaClipboardList, FaHouse, FaMagnifyingGlass, FaMoneyBill, FaPlus, FaShop, FaUserPlus } from 'react-icons/fa6';
+import { FaClipboardList, FaHouse, FaMagnifyingGlass, FaMoneyBill, FaPlus, FaShop, FaUser, FaUserPlus } from 'react-icons/fa6';
 
 const Header = () => {
   const { auth } = useAuth() // consumir  Context 08Nov23 (array)
@@ -64,7 +64,7 @@ const Header = () => {
                                 id={`offcanvasNavbarDropdown-expand-${expand}`}
                             >
                                 <NavDropdown.Item as={Link} to='/admin'><FaClipboardList /> Relatórios</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to='/register'><FaUserPlus /> Novo Usuário</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/users'><FaUser /> Usuários</NavDropdown.Item>
                             </NavDropdown>
                           </Nav>
                       </Offcanvas.Body>

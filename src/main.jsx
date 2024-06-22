@@ -15,13 +15,12 @@ import Reports from './routes/Reports.jsx';
 import Admin from './routes/Administrator.jsx';
 import Help from './routes/Help.jsx';
 import Unauthorized from './routes/Unauthorized.jsx';
-import InspectionForm from './routes/InspectionForm.jsx';
 
 import '../scss/custom.scss';
 
 import { AuthProvider } from './context/AuthProvider.jsx';
 import Recovery from './routes/Recovery.jsx';
-import InspectionList from './routes/InspectionList.jsx';
+import UserList from './routes/UserList.jsx';
 
 
 const ROLES = {
@@ -47,6 +46,7 @@ const AppRouter = (
     {/* Outras rotas protegidas */}
     <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
       <Route path="/config" element={<Config />} />
+      <Route path="/users" element={<UserList />} />
       <Route path="/report" element={<Reports />} />
       <Route path="/admin" element={<Admin />} />
     </Route>
