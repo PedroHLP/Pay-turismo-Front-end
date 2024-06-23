@@ -42,11 +42,18 @@ const UserDetails = () => {
 
     if (!user) {
         return (
-            <div className="d-flex justify-content-center">
-                <div className="spinner-border" role="status">
-                    <span className="visually-hidden">Loading...</span>
+            <>
+            <Header/>
+            <Container fluid>
+                <div className="d-flex justify-content-center align-items-center shadow-sm px-5 py-2 bg-body-tertiary rounded">
+                    <Row>
+                    <div className="spinner-border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                    </Row>
                 </div>
-            </div>
+            </Container>
+            </>            
         );
     }
     
