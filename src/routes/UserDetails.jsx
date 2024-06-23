@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useAutomationFetchPrivate from '../hooks/useAutomationFetchPrivate';
 import Header from '../components/Header';
-import { Container, Row } from 'react-bootstrap';
+import { Badge, Container, Row } from 'react-bootstrap';
 import Stack from 'react-bootstrap/Stack';
 import LabelledField from '../components/LabelledField';
 import getBank from '../functions/getBank';
@@ -49,6 +49,7 @@ const UserDetails = () => {
     const formattedCnpj = formatCnpj(user.cnpj);
     const formattedExpireDate = new Date(user.documentExpirationDate).toLocaleDateString('pt-BR');
     const formattedCep = formatCep(user.zipCode);
+    const formattedRegistrationDate = new Date(user.registrationDate).toLocaleDateString('pt-BR');
 
     const basicInfoStack = (
         <Stack className="mb-3">
@@ -85,6 +86,40 @@ const UserDetails = () => {
         </Stack>
     )
 
+    let badgeVariation = "", userStatus = "";
+    switch (user.registrationStatus){
+        case "PENDING":
+            badgeVariation = "secondary";
+            userStatus = "Identificação Facial";
+            break;
+        case "VERIFIED":
+            badgeVariation = "warning";
+            userStatus = "Verificar Documentos";
+            break;
+        case "APPROVED":
+            badgeVariation = "success";
+            userStatus = "OK";
+            break;
+        case "REJECTED":
+            badgeVariation = "danger";
+            userStatus = "Negado";
+            break;
+    }
+
+    const status = (
+        <Badge bg={badgeVariation}>
+            {userStatus}
+        </Badge>
+    )
+
+    const miscInfoStack = (
+        <Stack className="mb-3">
+            <h3>Outras Informações:</h3>
+            <LabelledField label="Data de cadastro:" value={formattedRegistrationDate} />
+            <LabelledField label="Situação do cadastro:" value={status} />
+        </Stack>
+    )
+
     return (
         <>
         <Header/>
@@ -93,6 +128,7 @@ const UserDetails = () => {
                 {basicInfoStack}
                 {addressStack}
                 {bankingInfoStack}
+                {miscInfoStack}
             </div>
         </Container>
         </>
