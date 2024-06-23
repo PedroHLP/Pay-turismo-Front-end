@@ -120,6 +120,29 @@ const UserDetails = () => {
         </Stack>
     )
 
+    const documentPhoto = user.documents.documentPhoto; // Assuming this is a base64 encoded string
+
+    const renderDocumentPhoto = () => {
+        if (!documentPhoto) return null;
+        return (
+            <div className="mt-3">
+                <h3>Foto do Documento:</h3>
+                <img src={`data:image/pdf;base64,${documentPhoto}`} alt="Document" style={{ maxWidth: '100%' }} />
+            </div>
+        );
+    };
+
+    const documentPdf = user.documents.cadasturProof; // Assuming this is a base64 encoded string
+
+    const openPdfInNewTab = () => {
+        if (!documentPdf) return;
+        const pdfDataUri = `data:application/pdf;base64,${documentPdf}`;
+        const newWindow = window.open(pdfDataUri);
+        if (!newWindow) {
+            alert('Pop-up blocked. Please allow pop-ups for this site to view the PDF.');
+        }
+    };
+
     return (
         <>
         <Header/>
@@ -129,6 +152,11 @@ const UserDetails = () => {
                 {addressStack}
                 {bankingInfoStack}
                 {miscInfoStack}
+                {renderDocumentPhoto()}
+                <div className="mt-3">
+                        <h3>Documento em PDF:</h3>
+                        <button className="btn btn-primary" onClick={openPdfInNewTab}>Abrir PDF em Nova Aba</button>
+                    </div>
             </div>
         </Container>
         </>
