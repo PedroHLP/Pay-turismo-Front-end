@@ -21,6 +21,7 @@ import '../scss/custom.scss';
 import { AuthProvider } from './context/AuthProvider.jsx';
 import Recovery from './routes/Recovery.jsx';
 import UserList from './routes/UserList.jsx';
+import UserDetails from './routes/UserDetails.jsx';
 
 
 const ROLES = {
@@ -47,6 +48,7 @@ const AppRouter = (
     <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
       <Route path="/config" element={<Config />} />
       <Route path="/users" element={<UserList />} />
+      <Route path="/users/:id" element={<UserDetails />} />
       <Route path="/report" element={<Reports />} />
       <Route path="/admin" element={<Admin />} />
     </Route>

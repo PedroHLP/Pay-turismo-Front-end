@@ -1,12 +1,11 @@
 import Container from 'react-bootstrap/Container';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { Badge, Button, Col, Row, Table } from 'react-bootstrap';
+import { Badge, Col, Row, Table } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaCheck, FaEye, FaPencil, FaTrash, FaXmark } from "react-icons/fa6";
+import { FaEye } from "react-icons/fa6";
 import { useEffect, useState } from 'react';
 import useAutomationFetchPrivate from '../hooks/useAutomationFetchPrivate';
-import { IMaskInput } from 'react-imask';
+import { formatCnpj } from '../functions/formatUtils';
 
 const USERS_URL = '/users/all';
 
@@ -34,24 +33,6 @@ const UserList = () => {
     useEffect(() => {
         getUsers();
     }, [location]);
-
-    const actions = (
-        <Row className="text-center">
-            <Col>
-                <Link to="#" className="link-dark">
-                    <FaEye />
-                </Link>
-            </Col>
-        </Row>
-    )
-
-    function formatCnpj(cnpj) {
-        if (!cnpj) return '';
-    
-        const cnpjRegex = /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/;
-        const formattedCnpj = cnpj.replace(cnpjRegex, '$1.$2.$3/$4-$5');
-        return formattedCnpj;
-    }
 
     const usersTableRows = users.map((user) => {
         const formattedCnpj = formatCnpj(user.cnpj);
@@ -86,7 +67,11 @@ const UserList = () => {
                 <td>{user.email}</td>
                 <td>{formattedDate}</td>
                 <td className="text-center"><Badge bg={badgeVariation}>{userStatus}</Badge></td>
-                <td>{actions}</td>
+                <td className="text-center">
+                    <Link to={`/users/${user.id}`} className="link-dark">
+                        <FaEye />
+                    </Link>
+                </td>
             </tr>
         );
     });

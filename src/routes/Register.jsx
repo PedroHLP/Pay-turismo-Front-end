@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { IMaskInput } from "react-imask";
 import automationFetch from "../axios/config";
 import SearchCity from "../components/SearchCity";
+import getBank from "../functions/getBank";
 
 const Register = () => {
   const REGISTER_URL = "/users/new";
@@ -29,7 +30,7 @@ const Register = () => {
   const PHONE_EXIST_URL = "/users/existsByPhone";
   const BANK_BR_URL = "https://brasilapi.com.br/api/banks/v1/";
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(1);
   const [error, setError] = useState("");
   const [isSearching, setSearching] = useState(false);
   const [isSuccess, setSuccess] = useState(false);
@@ -316,22 +317,16 @@ const Register = () => {
     setSearching(false);
   };
 
-  const getBank = async (bankNumber) => {
-    const urlWithParams = BANK_BR_URL + bankNumber;
+  const getBankName = async (bankNumber) => {
     setSearching(true);
     try {
-      const response = await fetch(urlWithParams);
-
-      if (response.ok) {
-        const data = await response.json();
-        setBankName(data.fullName);
-      } else {
-        setBankName("");
-      }
+      const bankFullName = await getBank(bankNumber);
+      setBankName(bankFullName);
     } catch (error) {
-      setError(error.message);
+      console.log(error)
+    } finally {
+      setSearching(false);
     }
-    setSearching(false);
   };
 
   const handleBlur = (event) => {
@@ -339,7 +334,7 @@ const Register = () => {
     if (name === "cep" && value !== "") {
       getCepAddress(address.cep);
     } else if (name === "bank" && value !== "") {
-      getBank(bankingInfo.bank);
+      getBankName(bankingInfo.bank);
     }
   };
 
