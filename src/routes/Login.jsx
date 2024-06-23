@@ -9,7 +9,7 @@ import Image from 'react-bootstrap/Image';
 import useAuth from '../hooks/useAuth.jsx';
 
 import logo from '../assets/login.svg';
-import { Col, FloatingLabel, Row } from 'react-bootstrap';
+import { Alert, Col, FloatingLabel, Row } from 'react-bootstrap';
 import { REGISTER_PATH } from '../paths.jsx';
 
 
@@ -95,10 +95,13 @@ const Login = () => {
     return (
         <div className="d-flex justify-content-center align-items-center vh-100">
             <Container>
-                <p ref={errRef} className="text-danger text-center" aria-live="assertive">{errMsg}</p>
+                <Alert ref={errRef} variant="danger"
+                className={`text-center ${errMsg === "" ? "visually-hidden" : ""}`}>
+                    {errMsg}
+                </Alert>
                 <Row className="align-items-center" xs={1} md={2}>
-                    <Col className="py-4">
-                        <div className="text-center"><Image src={logo} width={300}/></div>
+                    <Col className="py-4 d-none d-sm-block">
+                        <div className="text-center"><Image src={logo} fluid/></div>
                     </Col>
                     <Col>
                         <Form onSubmit={handleSubmit}>
@@ -130,18 +133,14 @@ const Login = () => {
                             </Col>
                         </Row>
 
-                        <Row>
-                            <Col>
-                            <br />
-                            <br />
-                                <p className="text-center text-muted">Ao clicar em continuar,  você concorda com nossos <a href="#">Termos de Serviço</a> e <a href="#">Política de Privacidade</a>.</p>
-                            </Col>
-                        </Row>
-
 
                     </Col>
                 </Row>
-
+                <Row className="mt-3">
+                    <Col>
+                        <p className="text-center text-muted">Ao clicar em continuar,  você concorda com nossos <a href="#">Termos de Serviço</a> e <a href="#">Política de Privacidade</a>.</p>
+                    </Col>
+                </Row>
             </Container>
         </div>
     )
