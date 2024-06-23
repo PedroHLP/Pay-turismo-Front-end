@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useAutomationFetchPrivate from '../hooks/useAutomationFetchPrivate';
 import Header from '../components/Header';
-import { Badge, Container, Row } from 'react-bootstrap';
+import { Badge, Button, Col, Container, Row } from 'react-bootstrap';
 import Stack from 'react-bootstrap/Stack';
 import LabelledField from '../components/LabelledField';
 import getBank from '../functions/getBank';
@@ -41,7 +41,13 @@ const UserDetails = () => {
     }, [id]);
 
     if (!user) {
-        return <div>Loading...</div>;
+        return (
+            <div className="d-flex justify-content-center">
+                <div className="spinner-border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        );
     }
     
     const formattedCpf = formatCpf(user.cpf);
@@ -50,15 +56,65 @@ const UserDetails = () => {
     const formattedExpireDate = new Date(user.documentExpirationDate).toLocaleDateString('pt-BR');
     const formattedCep = formatCep(user.zipCode);
     const formattedRegistrationDate = new Date(user.registrationDate).toLocaleDateString('pt-BR');
+    let badgeVariation = "", userStatus = "";
+    switch (user.registrationStatus){
+        case "PENDING":
+            badgeVariation = "secondary";
+            userStatus = "Identificação Facial";
+            break;
+        case "VERIFIED":
+            badgeVariation = "warning";
+            userStatus = "Verificar Documentos";
+            break;
+        case "APPROVED":
+            badgeVariation = "success";
+            userStatus = "OK";
+            break;
+        case "REJECTED":
+            badgeVariation = "danger";
+            userStatus = "Negado";
+            break;
+    }
+
+    const openDocument = (document, extension) => {
+        if (!document) return;
+    
+        let documentDataUri = "";
+    
+        if (extension === "pdf") {
+            documentDataUri = `data:application/pdf;base64,${document}`;
+        } else {
+            documentDataUri = `data:image/jpeg;base64,${document}`;
+        }
+    
+        const byteCharacters = atob(document);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: extension === "pdf" ? "application/pdf" : "image/jpeg" });
+    
+        const blobUrl = URL.createObjectURL(blob);
+    
+        window.open(blobUrl, '_blank');
+    
+        URL.revokeObjectURL(blobUrl);
+    };
+    
+
+    const status = (
+        <Badge bg={badgeVariation}>
+            {userStatus}
+        </Badge>
+    )
 
     const basicInfoStack = (
         <Stack className="mb-3">
             <h3>Informações Básicas:</h3>
-            <LabelledField label="Nome:" value={user.name} />
             <LabelledField label="CPF:" value={formattedCpf} />
             <LabelledField label="E-mail:" value={user.email} />
             <LabelledField label="Celular:" value={formattedPhone} />
-            <LabelledField label="Agência:" value={user.tradingName} />
             <LabelledField label="CNPJ:" value={formattedCnpj} />
             <LabelledField label="Vencimento:" value={formattedExpireDate} />
         </Stack>
@@ -86,32 +142,6 @@ const UserDetails = () => {
         </Stack>
     )
 
-    let badgeVariation = "", userStatus = "";
-    switch (user.registrationStatus){
-        case "PENDING":
-            badgeVariation = "secondary";
-            userStatus = "Identificação Facial";
-            break;
-        case "VERIFIED":
-            badgeVariation = "warning";
-            userStatus = "Verificar Documentos";
-            break;
-        case "APPROVED":
-            badgeVariation = "success";
-            userStatus = "OK";
-            break;
-        case "REJECTED":
-            badgeVariation = "danger";
-            userStatus = "Negado";
-            break;
-    }
-
-    const status = (
-        <Badge bg={badgeVariation}>
-            {userStatus}
-        </Badge>
-    )
-
     const miscInfoStack = (
         <Stack className="mb-3">
             <h3>Outras Informações:</h3>
@@ -120,45 +150,60 @@ const UserDetails = () => {
         </Stack>
     )
 
-    const documentPhoto = user.documents.documentPhoto; // Assuming this is a base64 encoded string
-
-    const renderDocumentPhoto = () => {
-        if (!documentPhoto) return null;
-        return (
-            <div className="mt-3">
-                <h3>Foto do Documento:</h3>
-                <img src={`data:image/pdf;base64,${documentPhoto}`} alt="Document" style={{ maxWidth: '100%' }} />
+    const documentsStack = (
+        <Stack className="mb-3">
+            <h3>Documentos:</h3>
+            <div className="mb-1">
+                <Button size="sm" onClick={() => openDocument(user.documents.documentPhoto, user.documents.documentPhotoExtension)}>
+                    Foto do documento
+                </Button>
             </div>
-        );
-    };
-
-    const documentPdf = user.documents.cadasturProof; // Assuming this is a base64 encoded string
-
-    const openPdfInNewTab = () => {
-        if (!documentPdf) return;
-        const pdfDataUri = `data:application/pdf;base64,${documentPdf}`;
-        const newWindow = window.open(pdfDataUri);
-        if (!newWindow) {
-            alert('Pop-up blocked. Please allow pop-ups for this site to view the PDF.');
-        }
-    };
+            <div className="mb-1">
+                <Button size="sm" onClick={() => openDocument(user.documents.identificationSelfie, user.documents.identificationSelfieExtension)}>
+                    Selfie com identificação
+                </Button>
+            </div>
+            <div className="mb-1">
+                <Button size="sm" onClick={() => openDocument(user.documents.residenceProof, user.documents.residenceProofExtension)}>
+                    Comprovante de residência
+                </Button>
+            </div>
+            <div className="mb-1">
+                <Button size="sm" onClick={() => openDocument(user.documents.cadasturProof, user.documents.cadasturProofExtension)}>
+                    Certificado Cadastur
+                </Button>
+            </div>
+            <div className="mb-1">
+                <Button size="sm" onClick={() => openDocument(user.documents.bankingProof, user.documents.bankingProofExtension)}>
+                    Comprovante Bancário
+                </Button>
+            </div>
+        </Stack>
+    )
 
     return (
         <>
-        <Header/>
-        <Container fluid>
-            <div className="shadow-sm p-3 bg-body-tertiary rounded">
-                {basicInfoStack}
-                {addressStack}
-                {bankingInfoStack}
-                {miscInfoStack}
-                {renderDocumentPhoto()}
-                <div className="mt-3">
-                        <h3>Documento em PDF:</h3>
-                        <button className="btn btn-primary" onClick={openPdfInNewTab}>Abrir PDF em Nova Aba</button>
-                    </div>
-            </div>
-        </Container>
+            <Header />
+            <Container fluid>
+                <div className="shadow-sm px-5 py-2 bg-body-tertiary rounded">
+                    <Row>
+                        <div>
+                            <h3 className="text-center">{user.tradingName}</h3>
+                            <h5 className="text-center">{user.name}</h5>
+                        </div>
+                        <hr/>
+                        <Col>
+                            {basicInfoStack}
+                            {addressStack}
+                        </Col>
+                        <Col>
+                            {bankingInfoStack}
+                            {miscInfoStack}
+                            {documentsStack}
+                        </Col>
+                    </Row>
+                </div>
+            </Container>
         </>
     );
 };
