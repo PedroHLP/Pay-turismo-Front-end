@@ -7,6 +7,7 @@ import Stack from 'react-bootstrap/Stack';
 import LabelledField from '../components/LabelledField';
 import getBank from '../functions/getBank';
 import { formatCep, formatCnpj, formatCpf, formatPhone } from '../functions/formatUtils';
+import { FaCheck } from 'react-icons/fa6';
 
 const UserDetails = () => {
     const { id } = useParams();
@@ -194,11 +195,11 @@ const UserDetails = () => {
             <Container fluid>
                 <div className="shadow-sm px-5 py-2 bg-body-tertiary rounded">
                     <Row>
-                        <div>
-                            <h3 className="text-center">{user.tradingName}</h3>
-                            <h5 className="text-center">{user.name}</h5>
-                        </div>
-                        <hr/>
+                        <h3 className="text-center">{user.tradingName}</h3>
+                        <h5 className="text-center">{user.name}</h5>
+                    </Row>
+                    <hr/>
+                    <Row>
                         <Col>
                             {basicInfoStack}
                             {addressStack}
@@ -208,6 +209,12 @@ const UserDetails = () => {
                             {miscInfoStack}
                             {documentsStack}
                         </Col>
+                    </Row>
+                    <hr/>
+                    <Row>
+                        <div className="text-end">
+                            <Button variant="success"><FaCheck className="me-1"/>Aprovar</Button>
+                        </div>
                     </Row>
                 </div>
             </Container>
