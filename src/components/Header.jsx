@@ -63,7 +63,6 @@ const Header = () => {
                                 title='Administração'
                                 id={`offcanvasNavbarDropdown-expand-${expand}`}
                             >
-                                <NavDropdown.Item as={Link} to='/admin'><FaClipboardList /> Relatórios</NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to='/users'><FaUser /> Usuários</NavDropdown.Item>
                             </NavDropdown>
                           </Nav>
