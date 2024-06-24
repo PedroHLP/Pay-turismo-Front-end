@@ -138,7 +138,7 @@ const Login = () => {
                 </Row>
                 <Row className="mt-3">
                     <Col>
-                        <p className="text-center text-muted">Ao clicar em continuar,  você concorda com nossos <a href="#">Termos de Serviço</a> e <a href="#">Política de Privacidade</a>.</p>
+                        <p className="text-center text-muted">Ao clicar em continuar,  você concorda com nossos <a href="https://payturismo.com.br/termos-de-uso/">Termos de Serviço</a> e <a href="https://payturismo.com.br/politica-de-privacidade-2/">Política de Privacidade</a>.</p>
                     </Col>
                 </Row>
             </Container>
