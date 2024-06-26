@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useAutomationFetchPrivate from '../hooks/useAutomationFetchPrivate';
 import Header from '../components/Header';
-import { Badge, Button, Col, Container, Row } from 'react-bootstrap';
+import { Alert, Badge, Button, Col, Container, Modal, Row } from 'react-bootstrap';
 import Stack from 'react-bootstrap/Stack';
 import LabelledField from '../components/LabelledField';
 import getBank from '../functions/getBank';
@@ -12,8 +12,13 @@ import { FaCheck } from 'react-icons/fa6';
 const UserDetails = () => {
     const { id } = useParams();
     const USER_URL = "/users/one/" + id;
+    const APPROVE_URL = "/users/approved";
     const [user, setUser] = useState(null);
     const [bankName, setBankName] = useState("");
+    const [error, setError] = useState("");
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const automationFetchPrivate = useAutomationFetchPrivate();
     const navigate = useNavigate();
@@ -39,7 +44,7 @@ const UserDetails = () => {
 
     useEffect(() => {
         getUser();
-    }, [id]);
+    }, [id, success]);
 
     if (!user) {
         return (
@@ -86,14 +91,6 @@ const UserDetails = () => {
 
     const openDocument = (document, extension) => {
         if (!document) return;
-    
-        let documentDataUri = "";
-    
-        if (extension === "pdf") {
-            documentDataUri = `data:application/pdf;base64,${document}`;
-        } else {
-            documentDataUri = `data:image/jpeg;base64,${document}`;
-        }
     
         const byteCharacters = atob(document);
         const byteNumbers = new Array(byteCharacters.length);
@@ -189,34 +186,114 @@ const UserDetails = () => {
         </Stack>
     )
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setShowConfirm(false);
+        setLoading(true);
+    
+        try {
+            const formData = new FormData();
+            formData.append("cpf", user.cpf);
+    
+            const config = {
+                headers: {
+                "Content-Type": "multipart/form-data",
+                },
+                withCredentials: true,
+            };
+    
+            const response = await automationFetchPrivate.put(
+                APPROVE_URL,
+                formData,
+                config,
+            );
+    
+            if (response.status === 200) {
+                setSuccess(true);
+            } else {
+                setError("Erro ao aprovar cadastro");
+            }
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 400) {
+                    setError("Erro ao aprovar cadastro");
+                }
+            } else if (error.request) {
+                setError("Sem resposta do servidor");
+            } else {
+                setError("Erro desconhecido: " + error.message);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+
+    const handleClose = () => setShowConfirm(false);
+
+    const handleShowConfirm = () => setShowConfirm(true);
+
     return (
         <>
             <Header />
+            <Modal show={showConfirm} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmar</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Aprovar o cadastro de <span className="fw-bold">{user.name}</span>?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Fechar
+                    </Button>
+                    <Button variant="success" type="submit" onClick={handleSubmit}>
+                        Aprovar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <Container fluid>
-                <div className="shadow-sm px-5 py-2 bg-body-tertiary rounded">
-                    <Row>
-                        <h3 className="text-center">{user.tradingName}</h3>
-                        <h5 className="text-center">{user.name}</h5>
-                    </Row>
-                    <hr/>
-                    <Row>
-                        <Col>
-                            {basicInfoStack}
-                            {addressStack}
-                        </Col>
-                        <Col>
-                            {bankingInfoStack}
-                            {miscInfoStack}
-                            {documentsStack}
-                        </Col>
-                    </Row>
-                    <hr/>
-                    <Row>
-                        <div className="text-end">
-                            <Button variant="success"><FaCheck className="me-1"/>Aprovar</Button>
-                        </div>
-                    </Row>
-                </div>
+                <Alert
+                    key="danger"
+                    variant="danger"
+                    className={`text-center ${error === "" ? "visually-hidden" : ""}`}
+                >
+                    {error}
+                </Alert>
+                {loading ? (
+                    <div className="d-flex justify-content-center align-items-center shadow-sm px-5 py-2 bg-body-tertiary rounded">
+                        <Row>
+                            <div className="spinner-border" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                        </Row>
+                    </div>
+                ) : (
+                    <div className="shadow-sm px-5 py-2 bg-body-tertiary rounded">
+                        <Row>
+                            <h3 className="text-center">{user.tradingName}</h3>
+                            <h5 className="text-center">{user.name}</h5>
+                        </Row>
+                        <hr/>
+                        <Row>
+                            <Col>
+                                {basicInfoStack}
+                                {addressStack}
+                            </Col>
+                            <Col>
+                                {bankingInfoStack}
+                                {miscInfoStack}
+                                {documentsStack}
+                            </Col>
+                        </Row>
+                        <hr/>
+                        <Row>
+                            <div className="text-end">
+                                <Button variant="success" onClick={handleShowConfirm} disabled={`${user.registrationStatus === "APPROVED" ? "false" : ""}`}><FaCheck className="me-1"/>Aprovar</Button>
+                            </div>
+                        </Row>
+                    </div>
+                )}
             </Container>
         </>
     );
