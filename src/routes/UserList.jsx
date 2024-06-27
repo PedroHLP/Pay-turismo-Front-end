@@ -18,7 +18,10 @@ const UserList = () => {
 
     const getUsers = async () => {
         try {
-            const response = await automationFetchPrivate.get(USERS_URL);
+            const config = {
+                showAdmin: false,
+            }
+            const response = await automationFetchPrivate.get(USERS_URL, config);
             let data = response.data;
     
             setUsers(data);
