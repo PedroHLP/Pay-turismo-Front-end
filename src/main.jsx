@@ -22,6 +22,7 @@ import { AuthProvider } from './context/AuthProvider.jsx';
 import Recovery from './routes/Recovery.jsx';
 import UserList from './routes/UserList.jsx';
 import UserDetails from './routes/UserDetails.jsx';
+import FirstLogin from './routes/FirstLogin.jsx';
 
 
 const ROLES = {
@@ -42,6 +43,7 @@ const AppRouter = (
     {/* Rota protegidas */}
     <Route element={<RequireAuth allowedRoles={[ROLES.Admin, ROLES.User]} />}>
       <Route path="/" element={<Home />} />
+      <Route path="/first_login" element={<FirstLogin />} />
     </Route>
 
     {/* Outras rotas protegidas */}

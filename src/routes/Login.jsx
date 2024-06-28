@@ -20,7 +20,7 @@ const Login = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
+    let from = location.state?.from?.pathname || "/";
 
     const userRef = useRef();
     const errRef = useRef();
@@ -59,10 +59,17 @@ const Login = () => {
             const accessToken = response?.data?.token;
             const roles = response?.data?.role;
             const refreshToken = response?.data?.refreshToken;
+            const userCpf = response?.data?.cpf;
+            const isFirstLogin = response?.data?.firstLogin;
+            const changePassword = response?.data?.changePassword;
 
-            setAuth({ user, pwd, roles, accessToken, refreshToken })
+            setAuth({ user, pwd, roles, accessToken, refreshToken, userCpf, isFirstLogin, changePassword });
             setUser('');
             setPwd('');
+
+            if (isFirstLogin) {
+                from = "/first_login";
+            }
 
             navigate(from, { replace: true });
 
