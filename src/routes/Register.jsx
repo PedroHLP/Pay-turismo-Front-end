@@ -21,6 +21,7 @@ import { IMaskInput } from "react-imask";
 import automationFetch from "../axios/config";
 import SearchCity from "../components/SearchCity";
 import getBank from "../functions/getBank";
+import { Typeahead } from 'react-bootstrap-typeahead';
 
 const Register = () => {
   const REGISTER_URL = "/users/new";
@@ -277,18 +278,18 @@ const Register = () => {
     }));
   };
 
-    const handleCheckboxChange = (e) => {
-        const isChecked = e.target.checked;
-        var number = ""
+  const handleCheckboxChange = (e) => {
+    const isChecked = e.target.checked;
+    var number = ""
 
-        setIsWithoutNumber(isChecked);
-        if(isChecked) number = "S/N";
-        
-        setAddress((prevState) => ({
-            ...prevState,
-            ['number']: number,
-        }));
-    };
+    setIsWithoutNumber(isChecked);
+    if (isChecked) number = "S/N";
+
+    setAddress((prevState) => ({
+      ...prevState,
+      ['number']: number,
+    }));
+  };
 
   const getCepAddress = async (cep) => {
     const urlWithParams = `https://viacep.com.br/ws/${cep}/json/`;
@@ -711,6 +712,7 @@ const Register = () => {
     </Tab>
   );
 
+
   const bankingInfoTab = (
     <Tab eventKey={1} title="Dados Bancários" key={1} disabled>
       <div className="text-center mb-3">
@@ -728,9 +730,10 @@ const Register = () => {
               </span>
             }
           >
+
             <Form.Control
               as={IMaskInput}
-              mask={Number}
+              mask={'000'}
               type="text"
               name="bank"
               autoComplete="off"
@@ -758,10 +761,13 @@ const Register = () => {
           }
         >
           <Form.Control
+            as={IMaskInput}
             type="text"
             name="agency"
             autoComplete="off"
             placeholder="Agência"
+            mask={'000-0'}
+
             onChange={(e) =>
               handleChange(setBankingInfo, e.target.name, e.target.value)
             }
@@ -779,6 +785,8 @@ const Register = () => {
           }
         >
           <Form.Control
+            as={IMaskInput}
+            mask={'000000000000'}
             type="text"
             name="account"
             autoComplete="off"
@@ -841,54 +849,56 @@ const Register = () => {
           }
         >
           <Form.Control
+            as={IMaskInput}
+            mask={/^[A-Za-z\s]*$/}
             type="text"
             name="address"
             autoComplete="off"
             placeholder="Endereço"
             value={address.address}
-            onChange={(e) =>
-              handleChange(setAddress, e.target.name, e.target.value)
-            }
+            onAccept={(value) => handleChange(setAddress, "address", value)}
             required
           />
+
         </FloatingLabel>
       </Form.Group>
-    <Form.Group className="mb-3">
+      <Form.Group className="mb-3">
         <InputGroup>
-            <FloatingLabel
-                label={
-                    <span>
-                    Número<span className="text-danger mx-1">*</span>
-                    </span>
-                }
-            >
-                <Form.Control
-                as={IMaskInput}
-                mask={Number}
-                type="text"
-                name="number"
-                autoComplete="off"
-                placeholder="Number"
-                onAccept={(value) => handleAccept(setAddress, "number", value)}
-                value={address.number}
-                disabled={isWithoutNumber}
-                required
-                />
-            </FloatingLabel>
-            <InputGroup.Text>
-                <Form.Check 
-                    type="checkbox"
-                    label="S/N"
-                    className="ms-1"
-                    checked={isWithoutNumber}
-                    onChange={(e) => handleCheckboxChange(e)}
-                />
-            </InputGroup.Text>
+          <FloatingLabel
+            label={
+              <span>
+                Número<span className="text-danger mx-1">*</span>
+              </span>
+            }
+          >
+            <Form.Control
+              as={IMaskInput}
+              mask={Number}
+              type="text"
+              name="number"
+              autoComplete="off"
+              placeholder="Number"
+              onAccept={(value) => handleAccept(setAddress, "number", value)}
+              value={address.number}
+              disabled={isWithoutNumber}
+              required
+            />
+          </FloatingLabel>
+          <InputGroup.Text>
+            <Form.Check
+              type="checkbox"
+              label="S/N"
+              className="ms-1"
+              checked={isWithoutNumber}
+              onChange={(e) => handleCheckboxChange(e)}
+            />
+          </InputGroup.Text>
         </InputGroup>
-    </Form.Group>
+      </Form.Group>
       <Form.Group className="mb-3">
         <FloatingLabel label="Complemento">
           <Form.Control
+          
             type="text"
             name="complement"
             autoComplete="off"
@@ -1104,7 +1114,7 @@ const Register = () => {
   }, [basicInfo.expireDate, isExpired]);
 
   useEffect(() => {
-    if (address.number !== "S/N"){
+    if (address.number !== "S/N") {
       setIsWithoutNumber(false);
     }
   }, [address.number])
@@ -1134,15 +1144,14 @@ const Register = () => {
         ) : (
           <Row className="align-items-center" xs={1} md={2}>
             <Col className="d-none d-sm-block">
-                <Image src={signUp} fluid/>
+              <Image src={signUp} fluid />
             </Col>
             <Col>
               <Alert
                 key="danger"
                 variant="danger"
-                className={`text-center ${
-                  error === "" ? "visually-hidden" : ""
-                }`}
+                className={`text-center ${error === "" ? "visually-hidden" : ""
+                  }`}
               >
                 {error}
               </Alert>
